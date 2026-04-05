@@ -47,6 +47,16 @@ app.use((req, res, next) => {
     next();
 });
 
+
+// Ruta raíz
+app.get('/', (req, res) => {
+    if (req.session.usuario) {
+        res.redirect('/dashboard');
+    } else {
+        res.redirect('/login');
+    }
+});
+
 // ── Rutas ────────────────────────────────────
 app.use('/', authRoutes);
 app.use('/', proyectoRoutes);
@@ -58,14 +68,7 @@ app.use('/', estadisticaRoutes);
 app.use('/', chatbotRoutes);
 app.use('/', rankingRoutes);
 app.use('/', logroRoutes);
-// Ruta raíz
-app.get('/', (req, res) => {
-    if (req.session.usuario) {
-        res.redirect('/dashboard');
-    } else {
-        res.redirect('/login');
-    }
-});
+
 
 // Dashboard (protegido)
 app.get('/dashboard', requireAuth, (req, res) => {
