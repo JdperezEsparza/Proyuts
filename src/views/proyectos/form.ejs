@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head', { titulo: proyecto ? 'Editar Proyecto' : 'Nuevo Proyecto' }) %>
+    <style>
+        .btn-primary { background-color: #1a237e; border-color: #1a237e; }
+        .btn-primary:hover { background-color: #283593; border-color: #283593; }
+    </style>
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <div class="d-flex align-items-center mb-4">
+                    <a href="/proyectos" class="btn btn-outline-secondary btn-sm me-3">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <h4 class="fw-bold mb-0">
+                        <i class="bi bi-<%= proyecto ? 'pencil' : 'plus-circle' %> me-2 text-primary"></i>
+                        <%= proyecto ? 'Editar proyecto' : 'Nuevo proyecto' %>
+                    </h4>
+                </div>
+                <div class="card p-4">
+                    <% if (error) { %>
+                    <div class="alert alert-danger"><i class="bi bi-exclamation-circle me-2"></i><%= error %></div>
+                    <% } %>
+                    <form action="<%= proyecto ? '/proyectos/' + proyecto.id + '/editar' : '/proyectos' %>" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Título <span class="text-danger">*</span></label>
+                            <input type="text" name="titulo" class="form-control"
+                                   placeholder="Nombre del proyecto"
+                                   value="<%= proyecto ? proyecto.titulo : '' %>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Descripción</label>
+                            <textarea name="descripcion" class="form-control" rows="3"
+                                      placeholder="Describe brevemente el proyecto"><%= proyecto ? proyecto.descripcion : '' %></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Curso</label>
+                            <select name="curso_id" class="form-select">
+                                <option value="">-- Sin curso --</option>
+                                <% cursos.forEach(c => { %>
+                                <option value="<%= c.id %>" <%= proyecto && proyecto.cursoId == c.id ? 'selected' : '' %>>
+                                    <%= c.nombre %>
+                                </option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Fecha de realización <span class="text-danger">*</span></label>
+                                <input type="date" name="fecha_realizacion" class="form-control"
+                                       value="<%= proyecto ? proyecto.fechaRealizacion.toISOString().split('T')[0] : '' %>" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Semestre <span class="text-danger">*</span></label>
+                                <select name="semestre" class="form-select" required>
+                                    <option value="">--</option>
+                                    <option value="1" <%= proyecto && proyecto.semestre == 1 ? 'selected' : '' %>>1</option>
+                                    <option value="2" <%= proyecto && proyecto.semestre == 2 ? 'selected' : '' %>>2</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Estado</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="estado"
+                                           value="en_progreso" id="enProgreso"
+                                           <%= !proyecto || proyecto.estado === 'en_progreso' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="enProgreso">
+                                        <span class="badge bg-warning text-dark">En progreso</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="estado"
+                                           value="terminado" id="terminado"
+                                           <%= proyecto && proyecto.estado === 'terminado' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="terminado">
+                                        <span class="badge bg-success">Terminado</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <small class="text-muted mt-1 d-block">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Solo los proyectos <strong>terminados</strong> cuentan para el ranking y los logros.
+                            </small>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-<%= proyecto ? 'check-circle' : 'plus-circle' %> me-1"></i>
+                                <%= proyecto ? 'Guardar cambios' : 'Crear proyecto' %>
+                            </button>
+                            <a href="/proyectos" class="btn btn-outline-secondary px-4">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/scripts') %>
+</body>
+</html>

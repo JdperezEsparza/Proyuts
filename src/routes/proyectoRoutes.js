@@ -1,0 +1,167 @@
+// ============================================
+// ProyUts - Rutas de Proyectos (CRUD)
+// src/routes/proyectoRoutes.js
+// ============================================
+
+const express        = require('express');
+const router         = express.Router();
+const Proyecto       = require('../models/Proyecto');
+const Usuario        = require('../models/Usuario');
+const db             = require('../config/db');
+const { requireAuth } = require('../middlewares/auth');
+
+// ── GET /proyectos - Listar todos los proyectos ──
+router.get('/proyectos', requireAuth, async (req, res) => {
+    try {
+        const usuarioId = req.session.usuario.id;
+        const proyectos = await Proyecto.obtenerPorUsuario(usuarioId);
+        const total     = await Proyecto.contarTodos(usuarioId);
+        const terminados = await Proyecto.contarTerminados(usuarioId);
+        const faltan    = Math.max(0, 52 - terminados);
+
+        res.render('proyectos/index', {
+            proyectos,
+            total,
+            terminados,
+            faltan
+        });
+    } catch (err) {
+        console.error(err);
+        res.redirect('/dashboard');
+    }
+});
+
+// ── GET /proyectos/nuevo - Formulario de creación ──
+router.get('/proyectos/nuevo', requireAuth, async (req, res) => {
+    try {
+        const [cursos] = await db.execute(`SELECT * FROM cursos WHERE activo = true`);
+        res.render('proyectos/form', {
+            proyecto: null,
+            cursos,
+            error: null
+        });
+    } catch (err) {
+        console.error(err);
+        res.redirect('/proyectos');
+    }
+});
+
+// ── POST /proyectos - Crear proyecto ─────────────
+router.post('/proyectos', requireAuth, async (req, res) => {
+    try {
+        const { titulo, descripcion, curso_id, fecha_realizacion, semestre, estado } = req.body;
+        const usuarioId = req.session.usuario.id;
+
+        if (!titulo || !fecha_realizacion || !semestre) {
+            const [cursos] = await db.execute(`SELECT * FROM cursos WHERE activo = true`);
+            return res.render('proyectos/form', {
+                proyecto: null,
+                cursos,
+                error: 'Por favor completa los campos obligatorios.'
+            });
+        }
+
+        const anio = new Date(fecha_realizacion).getFullYear();
+
+        await Proyecto.crear({
+            usuarioId,
+            cursoId: curso_id || null,
+            titulo,
+            descripcion,
+            fechaRealizacion: fecha_realizacion,
+            semestre,
+            anio,
+            estado: estado || 'en_progreso'
+        });
+
+        // Si el estado es terminado, verificar logros y sumar puntos
+        if (estado === 'terminado') {
+            const nuevosLogros = await Usuario.verificarLogros(usuarioId);
+            // Actualizar puntos en la sesión
+            const usuarioActualizado = await Usuario.buscarPorId(usuarioId);
+            req.session.usuario.puntos = usuarioActualizado.puntos;
+        }
+
+        res.redirect('/proyectos');
+    } catch (err) {
+        console.error(err);
+        res.redirect('/proyectos');
+    }
+});
+
+// ── GET /proyectos/:id/editar - Formulario de edición ──
+router.get('/proyectos/:id/editar', requireAuth, async (req, res) => {
+    try {
+        const usuarioId = req.session.usuario.id;
+        const proyecto  = await Proyecto.obtenerPorId(req.params.id, usuarioId);
+
+        if (!proyecto) return res.redirect('/proyectos');
+
+        const [cursos] = await db.execute(`SELECT * FROM cursos WHERE activo = true`);
+        res.render('proyectos/form', {
+            proyecto,
+            cursos,
+            error: null
+        });
+    } catch (err) {
+        console.error(err);
+        res.redirect('/proyectos');
+    }
+});
+
+// ── POST /proyectos/:id/editar - Actualizar proyecto ──
+router.post('/proyectos/:id/editar', requireAuth, async (req, res) => {
+    try {
+        const { titulo, descripcion, curso_id, fecha_realizacion, semestre, estado } = req.body;
+        const usuarioId  = req.session.usuario.id;
+        const proyectoId = req.params.id;
+
+        if (!titulo || !fecha_realizacion || !semestre) {
+            const [cursos] = await db.execute(`SELECT * FROM cursos WHERE activo = true`);
+            const proyecto = await Proyecto.obtenerPorId(proyectoId, usuarioId);
+            return res.render('proyectos/form', {
+                proyecto,
+                cursos,
+                error: 'Por favor completa los campos obligatorios.'
+            });
+        }
+
+        const anio = new Date(fecha_realizacion).getFullYear();
+
+        await Proyecto.actualizar(proyectoId, usuarioId, {
+            titulo,
+            descripcion,
+            cursoId: curso_id || null,
+            fechaRealizacion: fecha_realizacion,
+            semestre,
+            anio,
+            estado
+        });
+
+        // Verificar logros por si cambió a terminado
+        if (estado === 'terminado') {
+            await Usuario.verificarLogros(usuarioId);
+            const usuarioActualizado = await Usuario.buscarPorId(usuarioId);
+            req.session.usuario.puntos = usuarioActualizado.puntos;
+        }
+
+        res.redirect('/proyectos');
+    } catch (err) {
+        console.error(err);
+        res.redirect('/proyectos');
+    }
+});
+
+// ── POST /proyectos/:id/eliminar - Eliminar proyecto ──
+router.post('/proyectos/:id/eliminar', requireAuth, async (req, res) => {
+    try {
+        const usuarioId = req.session.usuario.id;
+        await Proyecto.eliminar(req.params.id, usuarioId);
+        res.redirect('/proyectos');
+    } catch (err) {
+        console.error(err);
+        res.redirect('/proyectos');
+    }
+});
+
+module.exports = router;

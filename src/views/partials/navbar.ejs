@@ -1,0 +1,17 @@
+<!-- ============================================
+     ProyUts - Navbar parcial reutilizable
+     src/views/partials/navbar.ejs
+     ============================================ -->
+<nav class="navbar navbar-dark px-4 py-3">
+    <a href="/dashboard" class="navbar-brand fw-bold fs-4">ProyUts</a>
+    <div class="d-flex align-items-center gap-3">
+        <span class="text-white">
+            <i class="bi bi-person-circle me-1"></i>
+            <%= usuario.nombre %> <%= usuario.apellido %>
+        </span>
+        <button class="btn-tema" id="btnTema" onclick="toggleTema()" title="Cambiar tema"></button>
+        <a href="/logout" class="btn btn-outline-light btn-sm">
+            <i class="bi bi-box-arrow-right me-1"></i>Salir
+        </a>
+    </div>
+</nav>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head', { titulo: 'Anuncios' }) %>
+    <style>
+        .anuncio-card {
+            border: none; border-radius: 12px;
+            border-left: 5px solid #1a237e;
+            box-shadow: var(--shadow); transition: transform 0.2s;
+        }
+        .anuncio-card:hover { transform: translateY(-3px); }
+        .btn-primary { background-color: #1a237e; border-color: #1a237e; }
+        .btn-primary:hover { background-color: #283593; border-color: #283593; }
+    </style>
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+    <div class="container py-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div class="d-flex align-items-center">
+                <a href="/dashboard" class="btn btn-outline-secondary btn-sm me-3"><i class="bi bi-arrow-left"></i></a>
+                <h4 class="fw-bold mb-0"><i class="bi bi-megaphone me-2 text-primary"></i>Tablero de Anuncios</h4>
+            </div>
+            <% if (usuario.rol === 'admin') { %>
+            <a href="/anuncios/nuevo" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i>Nuevo anuncio
+            </a>
+            <% } %>
+        </div>
+        <% if (mensaje === 'creado') { %>
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle me-2"></i>Anuncio publicado correctamente.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } else if (mensaje === 'actualizado') { %>
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle me-2"></i>Anuncio actualizado correctamente.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } else if (mensaje === 'eliminado') { %>
+        <div class="alert alert-warning alert-dismissible fade show">
+            <i class="bi bi-trash me-2"></i>Anuncio eliminado.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } %>
+        <% if (anuncios.length === 0) { %>
+        <div class="card p-5 text-center">
+            <i class="bi bi-megaphone fs-1 text-muted d-block mb-3"></i>
+            <h5 class="text-muted">No hay anuncios publicados aún</h5>
+        </div>
+        <% } else { %>
+            <% anuncios.forEach(a => { %>
+            <div class="anuncio-card card p-4 mb-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold mb-1"><%= a.titulo %></h5>
+                        <p class="text-muted mb-2" style="white-space:pre-line;"><%= a.contenido %></p>
+                        <small class="text-muted">
+                            <i class="bi bi-person me-1"></i><%= a.autor_nombre %> <%= a.autor_apellido %>
+                            &nbsp;·&nbsp;
+                            <i class="bi bi-calendar me-1"></i>
+                            <%= new Date(a.fecha_publicacion).toLocaleDateString('es-CO', { year:'numeric', month:'long', day:'numeric' }) %>
+                        </small>
+                    </div>
+                    <% if (usuario.rol === 'admin') { %>
+                    <div class="d-flex gap-2 ms-3">
+                        <a href="/anuncios/<%= a.id %>/editar" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <form action="/anuncios/<%= a.id %>/eliminar" method="POST"
+                              onsubmit="return confirm('¿Seguro que quieres eliminar este anuncio?')">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+            <% }) %>
+        <% } %>
+    </div>
+    <%- include('../partials/scripts') %>
+</body>
+</html>

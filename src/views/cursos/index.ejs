@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head', { titulo: 'Cursos' }) %>
+    <style>
+        .curso-card {
+            border: none;
+            border-radius: 12px;
+            border-left: 5px solid #1a237e;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+        .curso-card:hover { transform: translateY(-3px); }
+        .curso-card.inscrito { border-left-color: #2e7d32; }
+        .btn-primary { background-color: #1a237e; border-color: #1a237e; }
+        .btn-primary:hover { background-color: #283593; border-color: #283593; }
+    </style>
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+    <div class="container py-4">
+        <div class="d-flex align-items-center mb-4">
+            <a href="/dashboard" class="btn btn-outline-secondary btn-sm me-3"><i class="bi bi-arrow-left"></i></a>
+            <h4 class="fw-bold mb-0"><i class="bi bi-book me-2 text-primary"></i>Cursos Disponibles</h4>
+        </div>
+        <% if (mensaje === 'inscrito') { %>
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle me-2"></i>Te inscribiste al curso exitosamente.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } else if (mensaje === 'baja') { %>
+        <div class="alert alert-warning alert-dismissible fade show">
+            <i class="bi bi-info-circle me-2"></i>Te diste de baja del curso.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } %>
+        <div class="card p-3 mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="fw-bold mb-0">Mis cursos inscritos</h6>
+                    <small class="text-muted">Cursos en los que estás actualmente inscrito</small>
+                </div>
+                <span class="badge bg-primary fs-6"><%= inscritos.length %> cursos</span>
+            </div>
+            <% if (inscritos.length > 0) { %>
+            <div class="mt-2 d-flex flex-wrap gap-2">
+                <% inscritos.forEach(c => { %><span class="badge bg-success"><%= c.nombre %></span><% }) %>
+            </div>
+            <% } %>
+        </div>
+        <div class="d-flex gap-2 mb-3">
+            <button class="btn btn-sm btn-primary" onclick="filtrar('todos')">Todos</button>
+            <button class="btn btn-sm btn-outline-success" onclick="filtrar('inscrito')">Inscritos</button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="filtrar('no-inscrito')">No inscritos</button>
+        </div>
+        <% if (cursos.length === 0) { %>
+        <div class="card p-5 text-center">
+            <i class="bi bi-book fs-1 text-muted d-block mb-3"></i>
+            <h5 class="text-muted">No hay cursos disponibles</h5>
+        </div>
+        <% } else { %>
+            <% cursos.forEach(c => { %>
+            <div class="curso-card card p-3 mb-3 <%= c.inscrito ? 'inscrito' : '' %>"
+                 data-estado="<%= c.inscrito ? 'inscrito' : 'no-inscrito' %>">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <h6 class="fw-bold mb-0"><%= c.nombre %></h6>
+                            <% if (c.inscrito) { %><span class="badge bg-success">Inscrito</span><% } %>
+                        </div>
+                        <% if (c.descripcion) { %><p class="text-muted small mb-1"><%= c.descripcion %></p><% } %>
+                        <div class="d-flex gap-3">
+                            <small class="text-muted"><i class="bi bi-bookmark me-1"></i>Semestre <%= c.semestre %></small>
+                            <small class="text-muted"><i class="bi bi-star me-1"></i><%= c.creditos %> créditos</small>
+                        </div>
+                    </div>
+                    <div class="ms-3">
+                        <% if (c.inscrito) { %>
+                        <form action="/cursos/<%= c.id %>/baja" method="POST"
+                              onsubmit="return confirm('¿Seguro que quieres darte de baja?')">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-x-circle me-1"></i>Dar de baja
+                            </button>
+                        </form>
+                        <% } else { %>
+                        <form action="/cursos/<%= c.id %>/inscribir" method="POST">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="bi bi-plus-circle me-1"></i>Inscribirse
+                            </button>
+                        </form>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+        <% } %>
+    </div>
+    <%- include('../partials/scripts') %>
+    <script>
+        function filtrar(tipo) {
+            document.querySelectorAll('[data-estado]').forEach(t => {
+                t.style.display = (tipo === 'todos' || t.dataset.estado === tipo) ? 'block' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>

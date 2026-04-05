@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head', { titulo: anuncio ? 'Editar Anuncio' : 'Nuevo Anuncio' }) %>
+    <style>
+        .btn-primary { background-color: #1a237e; border-color: #1a237e; }
+        .btn-primary:hover { background-color: #283593; border-color: #283593; }
+    </style>
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <div class="d-flex align-items-center mb-4">
+                    <a href="/anuncios" class="btn btn-outline-secondary btn-sm me-3"><i class="bi bi-arrow-left"></i></a>
+                    <h4 class="fw-bold mb-0">
+                        <i class="bi bi-megaphone me-2 text-primary"></i>
+                        <%= anuncio ? 'Editar anuncio' : 'Nuevo anuncio' %>
+                    </h4>
+                </div>
+                <div class="card p-4">
+                    <% if (error) { %>
+                    <div class="alert alert-danger"><i class="bi bi-exclamation-circle me-2"></i><%= error %></div>
+                    <% } %>
+                    <form action="<%= anuncio ? '/anuncios/' + anuncio.id + '/editar' : '/anuncios' %>" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Título <span class="text-danger">*</span></label>
+                            <input type="text" name="titulo" class="form-control"
+                                   placeholder="Título del anuncio"
+                                   value="<%= anuncio ? anuncio.titulo : '' %>" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Contenido <span class="text-danger">*</span></label>
+                            <textarea name="contenido" class="form-control" rows="6"
+                                      placeholder="Escribe el contenido del anuncio..."
+                                      required><%= anuncio ? anuncio.contenido : '' %></textarea>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-<%= anuncio ? 'check-circle' : 'plus-circle' %> me-1"></i>
+                                <%= anuncio ? 'Guardar cambios' : 'Publicar anuncio' %>
+                            </button>
+                            <a href="/anuncios" class="btn btn-outline-secondary px-4">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/scripts') %>
+</body>
+</html>

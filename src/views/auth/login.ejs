@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head', { titulo: 'Iniciar Sesión' }) %>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 60%, #3949ab 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-primary { background-color: #1a237e; border-color: #1a237e; }
+        .btn-primary:hover { background-color: #283593; border-color: #283593; }
+        .logo-title { color: #1a237e; font-weight: 800; font-size: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card p-4">
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <h1 class="logo-title">ProyUts</h1>
+                            <p class="text-muted">Unidades Tecnológicas de Santander</p>
+                        </div>
+                        <% if (typeof query !== 'undefined' && query && query.registered) { %>
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle me-2"></i>Cuenta creada exitosamente. Ya puedes iniciar sesión.
+                        </div>
+                        <% } %>
+                        <% if (error) { %>
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-circle me-2"></i><%= error %>
+                        </div>
+                        <% } %>
+                        <form action="/login" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Correo electrónico</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" name="email" class="form-control"
+                                           placeholder="ejemplo@uts.edu.co" required>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Contraseña</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="contrasena" class="form-control"
+                                           placeholder="Tu contraseña" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar
+                            </button>
+                        </form>
+                        <hr>
+                        <p class="text-center mb-0">
+                            ¿No tienes cuenta?
+                            <a href="/registro" class="text-decoration-none fw-bold">Regístrate aquí</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/scripts') %>
+</body>
+</html>
