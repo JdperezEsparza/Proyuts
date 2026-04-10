@@ -5,28 +5,34 @@
 
 /* ── Variables modo claro (default) ────────── */
 :root {
-    --bg-body:       #f0f2f5;
-    --bg-card:       #ffffff;
-    --bg-input:      #ffffff;
-    --bg-hover:      #e8eaf6;
-    --text-primary:  #212121;
-    --text-muted:    #6c757d;
-    --border-color:  #dee2e6;
-    --navbar-bg:     #1a237e;
-    --shadow:        0 4px 20px rgba(0,0,0,0.08);
+    --verde-uts:        #C3D730;
+    --verde-uts-suave:  #F0F5CC;
+    --verde-uts-oscuro: #7A8A00;
+    --gris-claro:       #B3B3B3;
+    --gris-medio:       #878787;
+
+    --bg-body:          #F5F5F5;
+    --bg-card:          #ffffff;
+    --bg-input:         #ffffff;
+    --bg-hover:         #F0F5CC;
+    --text-primary:     #1A1A1A;
+    --text-muted:       #878787;
+    --border-color:     #E5E5E5;
+    --navbar-bg:        #1A1A1A;
+    --shadow:           0 4px 20px rgba(0,0,0,0.07);
 }
 
 /* ── Variables modo oscuro ──────────────────── */
 [data-theme="dark"] {
-    --bg-body:       #121212;
-    --bg-card:       #1e1e1e;
-    --bg-input:      #2a2a2a;
-    --bg-hover:      #2a2a2a;
-    --text-primary:  #e0e0e0;
-    --text-muted:    #9e9e9e;
-    --border-color:  #333333;
-    --navbar-bg:     #0d1257;
-    --shadow:        0 4px 20px rgba(0,0,0,0.4);
+    --bg-body:      #121212;
+    --bg-card:      #2A2A2A;
+    --bg-input:     #333333;
+    --bg-hover:     #3a3a2a;
+    --text-primary: #E0E0E0;
+    --text-muted:   #9E9E9E;
+    --border-color: #444444;
+    --navbar-bg:    #1A1A1A;
+    --shadow:       0 4px 20px rgba(0,0,0,0.4);
 }
 
 /* ── Aplicar variables ──────────────────────── */
@@ -36,10 +42,13 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
+/* ── Navbar ─────────────────────────────────── */
 .navbar {
     background-color: var(--navbar-bg) !important;
+    border-bottom: 2px solid var(--verde-uts);
 }
 
+/* ── Cards globales ─────────────────────────── */
 .card,
 .stat-card,
 .promedio-card,
@@ -47,7 +56,6 @@ body {
 .proyecto-card,
 .anuncio-card,
 .logro-card,
-.fila-ranking,
 .conversacion-item {
     background-color: var(--bg-card) !important;
     color: var(--text-primary) !important;
@@ -55,6 +63,13 @@ body {
     border-color: var(--border-color) !important;
 }
 
+/* Filas ranking heredan bg-hover en hover/yo */
+.fila-ranking:hover,
+.fila-ranking.yo {
+    background-color: var(--bg-hover) !important;
+}
+
+/* ── Inputs ─────────────────────────────────── */
 .form-control,
 .form-select,
 textarea {
@@ -63,102 +78,182 @@ textarea {
     border-color: var(--border-color) !important;
 }
 
+.form-control:focus,
+.form-select:focus,
+textarea:focus {
+    border-color: var(--verde-uts) !important;
+    box-shadow: 0 0 0 3px rgba(195, 215, 48, 0.2) !important;
+}
+
 .form-control::placeholder,
 textarea::placeholder {
     color: var(--text-muted) !important;
 }
 
+/* ── Radio buttons ──────────────────────────── */
+.form-check-input:checked {
+    background-color: var(--verde-uts-oscuro) !important;
+    border-color: var(--verde-uts-oscuro) !important;
+}
+.form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(195, 215, 48, 0.2) !important;
+}
+
+/* ── Textos muted y bordes ──────────────────── */
 .text-muted {
     color: var(--text-muted) !important;
 }
-
 .border-bottom {
     border-color: var(--border-color) !important;
 }
 
-/* Chat */
+/* ── Barra de progreso ──────────────────────── */
+.progress {
+    background-color: #EEEEEE;
+}
+[data-theme="dark"] .progress {
+    background-color: #444444;
+}
+.progress-bar {
+    background-color: var(--verde-uts) !important;
+}
+
+/* ── Chat ───────────────────────────────────── */
 .chat-box {
     background-color: var(--bg-input) !important;
 }
-
 .burbuja.suya {
     background-color: var(--bg-card) !important;
     color: var(--text-primary) !important;
 }
 
-/* Input group */
+/* ── Input group ────────────────────────────── */
 .input-group-text {
     background-color: var(--bg-input) !important;
     border-color: var(--border-color) !important;
     color: var(--text-muted) !important;
 }
 
-/* Alertas en modo oscuro */
-[data-theme="dark"] .alert-success {
-    background-color: #1b3a2a;
-    border-color: #2e7d32;
-    color: #a5d6a7;
+/* ── Alertas en modo oscuro ─────────────────── */
+[data-theme="dark"] .alerta-ok {
+    background-color: #2a3010;
+    border-color: var(--verde-uts);
+    color: #d4e86a;
 }
-
+[data-theme="dark"] .alerta-error {
+    background-color: #3a1b1b;
+    border-color: #c62828;
+    color: #ef9a9a;
+}
+[data-theme="dark"] .alert-success {
+    background-color: #2a3010;
+    border-color: var(--verde-uts);
+    color: #d4e86a;
+}
 [data-theme="dark"] .alert-danger {
     background-color: #3a1b1b;
     border-color: #c62828;
     color: #ef9a9a;
 }
-
 [data-theme="dark"] .alert-warning {
     background-color: #3a2e1b;
     border-color: #f57f17;
     color: #ffe082;
 }
 
-/* Badges y botones outline */
+/* ── Botones outline secundarios ────────────── */
 [data-theme="dark"] .btn-outline-secondary {
     color: var(--text-muted);
     border-color: var(--border-color);
 }
-
 [data-theme="dark"] .btn-outline-secondary:hover {
     background-color: var(--bg-hover);
     color: var(--text-primary);
 }
 
-/* Progress bar fondo */
-[data-theme="dark"] .progress {
-    background-color: #333333;
-}
-
-/* Logros pendientes en oscuro */
+/* ── Logros pendientes en oscuro ────────────── */
 [data-theme="dark"] .logro-card.pendiente {
     background-color: #1a1a1a !important;
 }
 
-/* Fila ranking hover */
-[data-theme="dark"] .fila-ranking:hover {
+/* ── Logros obtenidos ───────────────────────── */
+.logro-card.obtenido {
+    border-color: var(--verde-uts) !important;
     background-color: var(--bg-hover) !important;
 }
 
-/* Bienvenida bot */
+/* ── Bienvenida chatbot ─────────────────────── */
+.bienvenida-bot {
+    background: var(--navbar-bg);
+    border-left: 5px solid var(--verde-uts);
+}
 [data-theme="dark"] .bienvenida-bot {
-    background: linear-gradient(135deg, #0d1257, #1a237e);
+    background: #1A1A1A;
 }
 
-/* ── Botón de tema ───────────────────────────── */
+/* ── Botón de tema (sol/luna) ───────────────── */
 .btn-tema {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.4);
-    background: rgba(255,255,255,0.15);
-    color: white;
+    border: 1px solid var(--gris-medio);
+    background: transparent;
+    color: var(--gris-claro);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, border-color 0.2s;
     font-size: 1rem;
 }
-
 .btn-tema:hover {
-    background: rgba(255,255,255,0.3);
+    background: rgba(195, 215, 48, 0.15);
+    border-color: var(--verde-uts);
+}
+
+/* ── Botón salir en navbar ──────────────────── */
+.btn-outline-light {
+    border-color: var(--gris-medio) !important;
+    color: var(--gris-claro) !important;
+}
+.btn-outline-light:hover {
+    background-color: rgba(255,255,255,0.1) !important;
+    border-color: var(--gris-claro) !important;
+    color: #fff !important;
+}
+
+/* ── Rank-other en modo oscuro ──────────────── */
+[data-theme="dark"] .rank-other {
+    background-color: #3a3a3a;
+    color: var(--text-primary);
+}
+
+/* ── Mi posición en ranking ─────────────────── */
+.mi-posicion {
+    background: var(--navbar-bg);
+    border-left: 5px solid var(--verde-uts);
+    border-radius: 16px;
+    padding: 16px 20px;
+}
+.mi-posicion p { color: var(--gris-claro); }
+.mi-posicion h4 { color: #ffffff; }
+
+/* ── Banner bienvenida dashboard ────────────── */
+.bienvenida {
+    background: var(--navbar-bg);
+    border-left: 5px solid var(--verde-uts);
+    border-radius: 16px;
+}
+.bienvenida h4 { color: #ffffff; }
+.bienvenida p  { color: var(--gris-claro); }
+
+/* ── Badge puntos ───────────────────────────── */
+.puntos-badge {
+    background: var(--verde-uts);
+    border-radius: 12px;
+    padding: 8px 18px;
+}
+.puntos-badge p,
+.puntos-badge h5 {
+    color: #1A1A1A !important;
 }

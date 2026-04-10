@@ -3,29 +3,65 @@
 <head>
     <%- include('partials/head', { titulo: 'Panel Principal' }) %>
     <style>
-        .card-menu {
-            border: none;
+        /* === VARIABLES UTS === */
+        :root {
+            --verde-uts: #C3D730;
+            --verde-uts-suave: #F0F5CC;
+            --gris-claro: #B3B3B3;
+            --gris-medio: #878787;
+            --fondo: #F5F5F5;
+            --oscuro: #1A1A1A;
+        }
+
+        body {
+            background-color: var(--fondo);
+        }
+
+        /* === BIENVENIDA === */
+        .bienvenida {
+            background: var(--oscuro);
             border-radius: 16px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 5px solid var(--verde-uts);
+        }
+        .bienvenida h4 {
+            color: #ffffff;
+        }
+        .bienvenida p {
+            color: var(--gris-claro);
+        }
+
+        /* === BADGE DE PUNTOS === */
+        .puntos-badge {
+            background: var(--verde-uts);
+            border-radius: 12px;
+            padding: 8px 18px;
+        }
+        .puntos-badge p,
+        .puntos-badge h5 {
+            color: var(--oscuro) !important;
+        }
+
+        /* === CARDS === */
+        .card-menu {
+            border: 1px solid #E5E5E5 !important;
+            border-radius: 16px;
+            background: #ffffff;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
             cursor: pointer;
             text-decoration: none;
             color: inherit;
         }
         .card-menu:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(195, 215, 48, 0.2);
+            border-color: var(--verde-uts) !important;
             color: inherit;
         }
-        .card-menu .icon { font-size: 2.5rem; color: #1a237e; }
-        .bienvenida {
-            background: linear-gradient(135deg, #1a237e, #3949ab);
-            color: white;
-            border-radius: 16px;
-        }
-        .puntos-badge {
-            background: rgba(255,255,255,0.2);
-            border-radius: 12px;
-            padding: 6px 14px;
+
+        /* === ICONOS === */
+        .card-menu .icon {
+            font-size: 2.5rem;
+            color: #7A8A00;
         }
     </style>
 </head>
@@ -93,7 +129,7 @@
             </div>
             <div class="col-md-4 col-6">
                 <a href="/ranking" class="card card-menu p-4 text-center d-block">
-                    <i class="bi bi-trophy-fill icon" style="color:#FFA500;"></i>
+                    <i class="bi bi-trophy-fill icon" style="color:#F57C00;"></i>
                     <p class="fw-bold mt-2 mb-0">Ranking</p>
                     <small class="text-muted">Top 10 estudiantes</small>
                 </a>

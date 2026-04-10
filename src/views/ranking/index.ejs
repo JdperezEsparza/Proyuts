@@ -3,21 +3,39 @@
 <head>
     <%- include('../partials/head', { titulo: 'Ranking Top 10' }) %>
     <style>
+        :root {
+            --verde-uts: #C3D730;
+            --verde-uts-suave: #F0F5CC;
+            --gris-claro: #B3B3B3;
+            --gris-medio: #878787;
+            --fondo: #F5F5F5;
+            --oscuro: #1A1A1A;
+        }
+
+        body {
+            background-color: var(--fondo);
+        }
+
+        /* === PODIOS === */
         .podio-1 {
-            background: linear-gradient(135deg, #FFD700, #FFA000); color: white;
-            border-radius: 16px; padding: 24px 16px; text-align: center;
-            box-shadow: 0 8px 24px rgba(255,160,0,0.3);
+            background: linear-gradient(135deg, #FFD700, #FFA000);
+            color: white; border-radius: 16px; padding: 24px 16px;
+            text-align: center; box-shadow: 0 8px 24px rgba(255,160,0,0.25);
         }
         .podio-2 {
-            background: linear-gradient(135deg, #B0BEC5, #78909C); color: white;
-            border-radius: 16px; padding: 20px 16px; text-align: center;
-            margin-top: 20px; box-shadow: 0 8px 24px rgba(120,144,156,0.3);
+            background: linear-gradient(135deg, #B0BEC5, #78909C);
+            color: white; border-radius: 16px; padding: 20px 16px;
+            text-align: center; margin-top: 20px;
+            box-shadow: 0 8px 24px rgba(120,144,156,0.25);
         }
         .podio-3 {
-            background: linear-gradient(135deg, #CD7F32, #8D6E63); color: white;
-            border-radius: 16px; padding: 20px 16px; text-align: center;
-            margin-top: 20px; box-shadow: 0 8px 24px rgba(141,110,99,0.3);
+            background: linear-gradient(135deg, #CD7F32, #8D6E63);
+            color: white; border-radius: 16px; padding: 20px 16px;
+            text-align: center; margin-top: 20px;
+            box-shadow: 0 8px 24px rgba(141,110,99,0.25);
         }
+
+        /* === BADGES DE POSICIÓN === */
         .rank-badge {
             width: 44px; height: 44px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
@@ -26,19 +44,71 @@
         .rank-1 { background: linear-gradient(135deg, #FFD700, #FFA000); color: white; }
         .rank-2 { background: linear-gradient(135deg, #B0BEC5, #78909C); color: white; }
         .rank-3 { background: linear-gradient(135deg, #CD7F32, #8D6E63); color: white; }
-        .rank-other { background-color: var(--bg-hover); color: var(--text-primary); }
-        .fila-ranking { padding: 14px 16px; border-radius: 12px; transition: background 0.2s; }
-        .fila-ranking:hover { background-color: var(--bg-hover); }
-        .fila-ranking.yo { background-color: var(--bg-hover); }
-        .mi-posicion {
-            background: linear-gradient(135deg, #1a237e, #3949ab);
-            color: white; border-radius: 16px; padding: 16px 20px;
+        .rank-other { background-color: #EEEEEE; color: var(--oscuro); }
+
+        /* === FILAS === */
+        .fila-ranking {
+            padding: 14px 16px; border-radius: 12px; transition: background 0.2s;
         }
+        .fila-ranking:hover { background-color: var(--verde-uts-suave); }
+        .fila-ranking.yo { background-color: var(--verde-uts-suave); }
+
+        /* === MI POSICIÓN (antes azul, ahora oscuro + verde UTS) === */
+        .mi-posicion {
+            background: var(--oscuro);
+            border-radius: 16px;
+            padding: 16px 20px;
+            border-left: 5px solid var(--verde-uts);
+        }
+        .mi-posicion p { color: var(--gris-claro); }
+        .mi-posicion h4 { color: #ffffff; }
+
+        /* === AVATAR === */
         .avatar-sm {
             width: 40px; height: 40px; border-radius: 50%;
-            background: linear-gradient(135deg, #1a237e, #3949ab);
+            background: var(--verde-uts);
             display: flex; align-items: center; justify-content: center;
-            font-weight: 800; color: white; font-size: 0.85rem; flex-shrink: 0;
+            font-weight: 800; color: var(--oscuro); font-size: 0.85rem; flex-shrink: 0;
+        }
+
+        /* === BADGE "TÚ" === */
+        .badge-tu {
+            background: var(--verde-uts);
+            color: var(--oscuro);
+            font-weight: 700;
+            font-size: 0.75rem;
+            border-radius: 8px;
+            padding: 2px 8px;
+        }
+
+        /* === PUNTOS EN TABLA === */
+        .puntos-col {
+            color: #7A8A00;
+            font-weight: 700;
+        }
+
+        /* === BOTÓN VOLVER === */
+        .btn-volver {
+            background: transparent;
+            border: 1px solid var(--gris-medio);
+            color: var(--gris-medio);
+            border-radius: 10px;
+            padding: 4px 12px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s, color 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .btn-volver:hover {
+            border-color: var(--oscuro);
+            color: var(--oscuro);
+        }
+
+        /* === CARD TABLA === */
+        .card {
+            border: 1px solid #E5E5E5 !important;
+            border-radius: 16px;
         }
     </style>
 </head>
@@ -46,23 +116,25 @@
     <%- include('../partials/navbar') %>
     <div class="container py-4">
         <div class="d-flex align-items-center mb-4">
-            <a href="/dashboard" class="btn btn-outline-secondary btn-sm me-3"><i class="bi bi-arrow-left"></i></a>
+            <a href="/dashboard" class="btn-volver me-3"><i class="bi bi-arrow-left"></i></a>
             <h4 class="fw-bold mb-0">
-                <i class="bi bi-trophy-fill text-warning me-2"></i>Ranking Top 10
+                <i class="bi bi-trophy-fill me-2" style="color:#F57C00;"></i>Ranking Top 10
             </h4>
         </div>
+
         <div class="mi-posicion mb-4">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <p class="mb-0 opacity-75 small">Tu posición en el ranking</p>
+                    <p class="mb-0 small">Tu posición en el ranking</p>
                     <h4 class="fw-bold mb-0">#<%= miPosicion %> lugar</h4>
                 </div>
                 <div class="text-end">
-                    <p class="mb-0 opacity-75 small">Tus puntos</p>
+                    <p class="mb-0 small">Tus puntos</p>
                     <h4 class="fw-bold mb-0"><%= misPuntos %> pts</h4>
                 </div>
             </div>
         </div>
+
         <% if (ranking.length === 0) { %>
         <div class="card p-5 text-center">
             <i class="bi bi-trophy fs-1 text-muted d-block mb-3"></i>
@@ -75,7 +147,7 @@
                 <div class="col-4">
                     <div class="podio-2">
                         <div class="fs-2 mb-1">2</div>
-                        <div class="avatar-sm mx-auto mb-2" style="background:rgba(255,255,255,0.3);">
+                        <div class="avatar-sm mx-auto mb-2" style="background:rgba(255,255,255,0.3); color:white;">
                             <%= ranking[1].nombre.charAt(0) %><%= ranking[1].apellido.charAt(0) %>
                         </div>
                         <p class="fw-bold mb-0 small"><%= ranking[1].nombre %> <%= ranking[1].apellido %></p>
@@ -87,7 +159,7 @@
                     <div class="podio-1">
                         <i class="bi bi-trophy-fill fs-3 mb-1 d-block"></i>
                         <div class="fs-1 fw-bold">1</div>
-                        <div class="avatar-sm mx-auto mb-2" style="background:rgba(255,255,255,0.3);">
+                        <div class="avatar-sm mx-auto mb-2" style="background:rgba(255,255,255,0.3); color:white;">
                             <%= ranking[0].nombre.charAt(0) %><%= ranking[0].apellido.charAt(0) %>
                         </div>
                         <p class="fw-bold mb-0"><%= ranking[0].nombre %> <%= ranking[0].apellido %></p>
@@ -98,7 +170,7 @@
                 <div class="col-4">
                     <div class="podio-3">
                         <div class="fs-2 mb-1">3</div>
-                        <div class="avatar-sm mx-auto mb-2" style="background:rgba(255,255,255,0.3);">
+                        <div class="avatar-sm mx-auto mb-2" style="background:rgba(255,255,255,0.3); color:white;">
                             <%= ranking[2].nombre.charAt(0) %><%= ranking[2].apellido.charAt(0) %>
                         </div>
                         <p class="fw-bold mb-0 small"><%= ranking[2].nombre %> <%= ranking[2].apellido %></p>
@@ -108,6 +180,7 @@
                 </div>
             </div>
             <% } %>
+
             <div class="card p-3">
                 <h6 class="fw-bold mb-3">Tabla completa</h6>
                 <% ranking.forEach((u, i) => { %>
@@ -119,12 +192,12 @@
                     <div class="flex-grow-1">
                         <p class="fw-bold mb-0">
                             <%= u.nombre %> <%= u.apellido %>
-                            <% if (u.id === usuario.id) { %><span class="badge bg-primary ms-1">Tú</span><% } %>
+                            <% if (u.id === usuario.id) { %><span class="badge-tu ms-1">Tú</span><% } %>
                         </p>
                         <small class="text-muted"><%= u.programa %> · Semestre <%= u.semestre %></small>
                     </div>
                     <div class="text-end">
-                        <p class="fw-bold mb-0 text-primary"><%= u.puntos %> pts</p>
+                        <p class="puntos-col mb-0"><%= u.puntos %> pts</p>
                         <small class="text-muted"><%= u.proyectos_terminados %> proyectos</small>
                     </div>
                 </div>

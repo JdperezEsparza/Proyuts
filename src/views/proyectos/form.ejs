@@ -3,8 +3,116 @@
 <head>
     <%- include('../partials/head', { titulo: proyecto ? 'Editar Proyecto' : 'Nuevo Proyecto' }) %>
     <style>
-        .btn-primary { background-color: #1a237e; border-color: #1a237e; }
-        .btn-primary:hover { background-color: #283593; border-color: #283593; }
+        :root {
+            --verde-uts: #C3D730;
+            --verde-uts-suave: #F0F5CC;
+            --verde-uts-oscuro: #7A8A00;
+            --gris-claro: #B3B3B3;
+            --gris-medio: #878787;
+            --fondo: #F5F5F5;
+            --oscuro: #1A1A1A;
+        }
+
+        body { background-color: var(--fondo); }
+
+        /* === BOTÓN VOLVER === */
+        .btn-volver {
+            background: transparent;
+            border: 1px solid var(--gris-medio);
+            color: var(--gris-medio);
+            border-radius: 10px;
+            padding: 4px 12px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s, color 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .btn-volver:hover { border-color: var(--oscuro); color: var(--oscuro); }
+
+        /* === ÍCONO TÍTULO === */
+        .icon-titulo { color: var(--verde-uts-oscuro); }
+
+        /* === CARD FORMULARIO === */
+        .card-form {
+            border: 1px solid #E5E5E5 !important;
+            border-radius: 16px;
+            background: #fff;
+        }
+
+        /* === INPUTS Y SELECTS === */
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--verde-uts);
+            box-shadow: 0 0 0 3px rgba(195, 215, 48, 0.2);
+        }
+
+        /* === RADIO BUTTONS === */
+        .form-check-input:checked {
+            background-color: var(--verde-uts-oscuro);
+            border-color: var(--verde-uts-oscuro);
+        }
+        .form-check-input:focus {
+            box-shadow: 0 0 0 3px rgba(195, 215, 48, 0.2);
+        }
+
+        /* === BADGES ESTADO === */
+        .badge-progreso {
+            background-color: #F57C00;
+            color: white;
+            border-radius: 8px;
+            padding: 3px 10px;
+            font-size: 0.8rem;
+        }
+        .badge-terminado {
+            background-color: #2e7d32;
+            color: white;
+            border-radius: 8px;
+            padding: 3px 10px;
+            font-size: 0.8rem;
+        }
+
+        /* === BOTÓN PRIMARIO UTS === */
+        .btn-uts {
+            background: var(--verde-uts);
+            color: var(--oscuro);
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 24px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+        .btn-uts:hover { background: #b0c228; color: var(--oscuro); }
+
+        /* === BOTÓN CANCELAR === */
+        .btn-cancelar {
+            background: transparent;
+            border: 1px solid var(--gris-medio);
+            color: var(--gris-medio);
+            border-radius: 10px;
+            padding: 8px 24px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-cancelar:hover { border-color: var(--oscuro); color: var(--oscuro); }
+
+        /* === ALERTA ERROR === */
+        .alerta-error {
+            background: #FFEBEE;
+            border: 1px solid #E53935;
+            color: #B71C1C;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -13,18 +121,22 @@
         <div class="row justify-content-center">
             <div class="col-md-7">
                 <div class="d-flex align-items-center mb-4">
-                    <a href="/proyectos" class="btn btn-outline-secondary btn-sm me-3">
+                    <a href="/proyectos" class="btn-volver me-3">
                         <i class="bi bi-arrow-left"></i>
                     </a>
                     <h4 class="fw-bold mb-0">
-                        <i class="bi bi-<%= proyecto ? 'pencil' : 'plus-circle' %> me-2 text-primary"></i>
+                        <i class="bi bi-<%= proyecto ? 'pencil' : 'plus-circle' %> me-2 icon-titulo"></i>
                         <%= proyecto ? 'Editar proyecto' : 'Nuevo proyecto' %>
                     </h4>
                 </div>
-                <div class="card p-4">
+
+                <div class="card-form card p-4">
                     <% if (error) { %>
-                    <div class="alert alert-danger"><i class="bi bi-exclamation-circle me-2"></i><%= error %></div>
+                    <div class="alerta-error mb-3">
+                        <i class="bi bi-exclamation-circle me-2"></i><%= error %>
+                    </div>
                     <% } %>
+
                     <form action="<%= proyecto ? '/proyectos/' + proyecto.id + '/editar' : '/proyectos' %>" method="POST">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Título <span class="text-danger">*</span></label>
@@ -32,11 +144,13 @@
                                    placeholder="Nombre del proyecto"
                                    value="<%= proyecto ? proyecto.titulo : '' %>" required>
                         </div>
+
                         <div class="mb-3">
                             <label class="form-label fw-bold">Descripción</label>
                             <textarea name="descripcion" class="form-control" rows="3"
                                       placeholder="Describe brevemente el proyecto"><%= proyecto ? proyecto.descripcion : '' %></textarea>
                         </div>
+
                         <div class="mb-3">
                             <label class="form-label fw-bold">Curso</label>
                             <select name="curso_id" class="form-select">
@@ -48,6 +162,7 @@
                                 <% }) %>
                             </select>
                         </div>
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold">Fecha de realización <span class="text-danger">*</span></label>
@@ -63,6 +178,7 @@
                                 </select>
                             </div>
                         </div>
+
                         <div class="mb-4">
                             <label class="form-label fw-bold">Estado</label>
                             <div class="d-flex gap-3">
@@ -71,7 +187,7 @@
                                            value="en_progreso" id="enProgreso"
                                            <%= !proyecto || proyecto.estado === 'en_progreso' ? 'checked' : '' %>>
                                     <label class="form-check-label" for="enProgreso">
-                                        <span class="badge bg-warning text-dark">En progreso</span>
+                                        <span class="badge-progreso">En progreso</span>
                                     </label>
                                 </div>
                                 <div class="form-check">
@@ -79,7 +195,7 @@
                                            value="terminado" id="terminado"
                                            <%= proyecto && proyecto.estado === 'terminado' ? 'checked' : '' %>>
                                     <label class="form-check-label" for="terminado">
-                                        <span class="badge bg-success">Terminado</span>
+                                        <span class="badge-terminado">Terminado</span>
                                     </label>
                                 </div>
                             </div>
@@ -88,15 +204,17 @@
                                 Solo los proyectos <strong>terminados</strong> cuentan para el ranking y los logros.
                             </small>
                         </div>
+
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary px-4">
-                                <i class="bi bi-<%= proyecto ? 'check-circle' : 'plus-circle' %> me-1"></i>
+                            <button type="submit" class="btn-uts">
+                                <i class="bi bi-<%= proyecto ? 'check-circle' : 'plus-circle' %>"></i>
                                 <%= proyecto ? 'Guardar cambios' : 'Crear proyecto' %>
                             </button>
-                            <a href="/proyectos" class="btn btn-outline-secondary px-4">Cancelar</a>
+                            <a href="/proyectos" class="btn-cancelar">Cancelar</a>
                         </div>
                     </form>
                 </div>
+
             </div>
         </div>
     </div>
