@@ -1,34 +1,54 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProyUts - Ranking</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <%- include('../partials/head', { titulo: 'Ranking Top 10' }) %>
     <style>
-        body { background-color: #f0f2f5; }
-        .navbar { background-color: #1a237e !important; }
-        .card {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        :root {
+            --verde-uts: #C3D730;
+            --verde-uts-suave: #F0F5CC;
+            --verde-uts-oscuro: #7A8A00;
+            --gris-claro: #B3B3B3;
+            --gris-medio: #878787;
+            --fondo: #F5F5F5;
+            --oscuro: #1A1A1A;
         }
-        .rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: white; }
-        .rank-2 { background: linear-gradient(135deg, #C0C0C0, #A9A9A9); color: white; }
-        .rank-3 { background: linear-gradient(135deg, #CD7F32, #A0522D); color: white; }
-        .rank-badge {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
+
+        body { background-color: var(--fondo); }
+
+        /* === BOTÓN VOLVER === */
+        .btn-volver {
+            background: transparent;
+            border: 1px solid var(--gris-medio);
+            color: var(--gris-medio);
+            border-radius: 10px;
+            padding: 4px 12px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s, color 0.2s;
+            text-decoration: none;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1.1rem;
-            flex-shrink: 0;
         }
-        .rank-other { background-color: #e9ecef; color: #495057; }
+        .btn-volver:hover { border-color: var(--oscuro); color: var(--oscuro); }
+
+        /* === CARDS === */
+        .card {
+            border: 1px solid #E5E5E5 !important;
+            border-radius: 16px;
+            background: var(--bg-card, #fff);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        /* === MI POSICIÓN === */
+        .mi-posicion {
+            background: var(--oscuro);
+            border-left: 5px solid var(--verde-uts);
+            border-radius: 16px;
+            padding: 16px 20px;
+        }
+        .mi-posicion p  { color: var(--gris-claro); margin-bottom: 0; }
+        .mi-posicion h5 { color: #ffffff; margin-bottom: 0; }
+
+        /* === PÓDIO === */
         .podio-card {
             border-radius: 16px;
             padding: 20px;
@@ -37,51 +57,67 @@
             transition: transform 0.2s;
         }
         .podio-card:hover { transform: translateY(-4px); }
-        .mi-posicion {
-            background: linear-gradient(135deg, #1a237e, #3949ab);
-            color: white;
-            border-radius: 16px;
+        .rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); }
+        .rank-2 { background: linear-gradient(135deg, #C0C0C0, #A9A9A9); }
+        .rank-3 { background: linear-gradient(135deg, #CD7F32, #A0522D); }
+
+        /* === BADGES DE POSICIÓN === */
+        .rank-badge {
+            width: 42px; height: 42px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.1rem; flex-shrink: 0;
         }
+        .rank-badge-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: white; }
+        .rank-badge-2 { background: linear-gradient(135deg, #C0C0C0, #A9A9A9); color: white; }
+        .rank-badge-3 { background: linear-gradient(135deg, #CD7F32, #A0522D); color: white; }
+        .rank-other   { background-color: #EEEEEE; color: var(--gris-medio); }
+
+        /* === BADGE TÚ === */
+        .badge-tu {
+            background: var(--verde-uts);
+            color: var(--oscuro);
+            font-weight: 700;
+            font-size: 0.75rem;
+            border-radius: 8px;
+            padding: 2px 8px;
+        }
+
+        /* === PUNTOS EN TABLA === */
+        .puntos-col {
+            color: var(--verde-uts-oscuro);
+            font-weight: 700;
+        }
+
+        /* === FILA HOVER === */
+        .fila-ranking {
+            border-radius: 8px;
+            transition: background 0.15s;
+        }
+        .fila-ranking:hover { background: var(--verde-uts-suave); }
+        .fila-ranking.yo    { background: var(--verde-uts-suave); }
     </style>
 </head>
 <body>
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-dark px-4 py-3">
-        <a href="/dashboard" class="navbar-brand fw-bold fs-4">ProyUts</a>
-        <div class="d-flex align-items-center gap-3">
-            <span class="text-white">
-                <i class="bi bi-person-circle me-1"></i>
-                <%= usuario.nombre %> <%= usuario.apellido %>
-            </span>
-            <a href="/logout" class="btn btn-outline-light btn-sm">
-                <i class="bi bi-box-arrow-right me-1"></i>Salir
-            </a>
-        </div>
-    </nav>
-
+    <%- include('../partials/navbar') %>
     <div class="container py-4">
 
-        <!-- Encabezado -->
         <div class="d-flex align-items-center mb-4">
-            <a href="/dashboard" class="btn btn-outline-secondary btn-sm me-3">
-                <i class="bi bi-arrow-left"></i>
-            </a>
+            <a href="/dashboard" class="btn-volver me-3"><i class="bi bi-arrow-left"></i></a>
             <h4 class="fw-bold mb-0">
-                <i class="bi bi-trophy-fill text-warning me-2"></i>Ranking Top 10
+                <i class="bi bi-trophy-fill me-2" style="color:#F57C00;"></i>Ranking Top 10
             </h4>
         </div>
 
         <!-- Mi posición -->
-        <div class="mi-posicion p-3 mb-4">
+        <div class="mi-posicion mb-4">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <p class="mb-0 opacity-75 small">Tu posición actual</p>
-                    <h5 class="fw-bold mb-0">#<%= miPosicion %> en el ranking general</h5>
+                    <p class="small">Tu posición actual</p>
+                    <h5 class="fw-bold">#<%= miPosicion %> en el ranking general</h5>
                 </div>
                 <div class="text-end">
-                    <p class="mb-0 opacity-75 small">Tus puntos</p>
-                    <h5 class="fw-bold mb-0"><%= usuario.puntos || 0 %> pts</h5>
+                    <p class="small">Tus puntos</p>
+                    <h5 class="fw-bold"><%= usuario.puntos || 0 %> pts</h5>
                 </div>
             </div>
         </div>
@@ -89,71 +125,68 @@
         <!-- Pódio top 3 -->
         <% if (ranking.length >= 3) { %>
         <div class="row g-3 mb-4">
-            <!-- 2do lugar -->
             <div class="col-4">
                 <div class="podio-card rank-2 mt-4">
                     <div class="fs-2">2</div>
                     <p class="fw-bold mb-0"><%= ranking[1].nombre %> <%= ranking[1].apellido %></p>
-                    <small><%= ranking[1].puntos %> pts</small>
-                    <br><small><%= ranking[1].proyectos_terminados %> proyectos</small>
+                    <small><%= ranking[1].puntos %> pts</small><br>
+                    <small><%= ranking[1].proyectos_terminados %> proyectos</small>
                 </div>
             </div>
-            <!-- 1er lugar -->
             <div class="col-4">
                 <div class="podio-card rank-1">
                     <div class="fs-1">1</div>
                     <i class="bi bi-trophy-fill fs-4"></i>
                     <p class="fw-bold mb-0"><%= ranking[0].nombre %> <%= ranking[0].apellido %></p>
-                    <small><%= ranking[0].puntos %> pts</small>
-                    <br><small><%= ranking[0].proyectos_terminados %> proyectos</small>
+                    <small><%= ranking[0].puntos %> pts</small><br>
+                    <small><%= ranking[0].proyectos_terminados %> proyectos</small>
                 </div>
             </div>
-            <!-- 3er lugar -->
             <div class="col-4">
                 <div class="podio-card rank-3 mt-4">
                     <div class="fs-2">3</div>
                     <p class="fw-bold mb-0"><%= ranking[2].nombre %> <%= ranking[2].apellido %></p>
-                    <small><%= ranking[2].puntos %> pts</small>
-                    <br><small><%= ranking[2].proyectos_terminados %> proyectos</small>
+                    <small><%= ranking[2].puntos %> pts</small><br>
+                    <small><%= ranking[2].proyectos_terminados %> proyectos</small>
                 </div>
             </div>
         </div>
         <% } %>
 
-        <!-- Tabla completa top 10 -->
+        <!-- Tabla completa -->
         <div class="card p-3">
             <h6 class="fw-bold mb-3">Tabla completa</h6>
-            <% ranking.forEach((u, i) => { %>
-            <div class="d-flex align-items-center gap-3 py-2 <%= i < ranking.length - 1 ? 'border-bottom' : '' %>">
-                <div class="rank-badge <%= i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'rank-other' %>">
-                    <%= i + 1 %>
-                </div>
-                <div class="flex-grow-1">
-                    <p class="fw-bold mb-0">
-                        <%= u.nombre %> <%= u.apellido %>
-                        <% if (u.id === usuario.id) { %>
-                        <span class="badge bg-primary ms-1">Tú</span>
-                        <% } %>
-                    </p>
-                    <small class="text-muted"><%= u.programa %> - Semestre <%= u.semestre %></small>
-                </div>
-                <div class="text-end">
-                    <p class="fw-bold mb-0 text-primary"><%= u.puntos %> pts</p>
-                    <small class="text-muted"><%= u.proyectos_terminados %> proyectos</small>
-                </div>
-            </div>
-            <% }) %>
 
             <% if (ranking.length === 0) { %>
             <div class="text-center text-muted py-4">
-                <i class="bi bi-trophy fs-1 d-block mb-2"></i>
+                <i class="bi bi-trophy fs-1 d-block mb-2" style="color:var(--gris-medio);"></i>
                 Aún no hay datos en el ranking. ¡Sé el primero!
             </div>
+            <% } else { %>
+                <% ranking.forEach((u, i) => { %>
+                <div class="fila-ranking d-flex align-items-center gap-3 py-2 <%= u.id === usuario.id ? 'yo' : '' %> <%= i < ranking.length - 1 ? 'border-bottom' : '' %>">
+                    <div class="rank-badge <%= i === 0 ? 'rank-badge-1' : i === 1 ? 'rank-badge-2' : i === 2 ? 'rank-badge-3' : 'rank-other' %>">
+                        <%= i + 1 %>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="fw-bold mb-0">
+                            <%= u.nombre %> <%= u.apellido %>
+                            <% if (u.id === usuario.id) { %>
+                            <span class="badge-tu ms-1">Tú</span>
+                            <% } %>
+                        </p>
+                        <small class="text-muted"><%= u.programa %> · Semestre <%= u.semestre %></small>
+                    </div>
+                    <div class="text-end">
+                        <p class="puntos-col mb-0"><%= u.puntos %> pts</p>
+                        <small class="text-muted"><%= u.proyectos_terminados %> proyectos</small>
+                    </div>
+                </div>
+                <% }) %>
             <% } %>
         </div>
 
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <%- include('../partials/scripts') %>
 </body>
 </html>

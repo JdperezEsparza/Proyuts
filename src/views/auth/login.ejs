@@ -4,64 +4,148 @@
     <%- include('../partials/head', { titulo: 'Iniciar Sesión' }) %>
     <style>
         body {
-            background: linear-gradient(135deg, #1a237e 0%, #283593 60%, #3949ab 100%);
+            background: #1A1A1A;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .btn-primary { background-color: #1a237e; border-color: #1a237e; }
-        .btn-primary:hover { background-color: #283593; border-color: #283593; }
-        .logo-title { color: #1a237e; font-weight: 800; font-size: 2rem; }
+
+        /* === CARD === */
+        .card-login {
+            background: #ffffff;
+            border-radius: 20px;
+            border: none;
+            padding: 2rem 2rem;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+
+        /* === ACENTO SUPERIOR === */
+        .card-accent {
+            height: 4px;
+            background: #C3D730;
+            margin: -2rem -2rem 1.5rem -2rem;
+            border-radius: 20px 20px 0 0;
+        }
+
+        /* === LOGO === */
+        .logo-title {
+            color: #C3D730;
+            font-weight: 800;
+            font-size: 2rem;
+            letter-spacing: -1px;
+        }
+        .logo-sub { color: #878787; font-size: 0.9rem; }
+
+        /* === INPUTS === */
+        .form-control:focus {
+            border-color: #C3D730;
+            box-shadow: 0 0 0 3px rgba(195, 215, 48, 0.2);
+        }
+        .input-group-text {
+            background: #F5F5F5;
+            border-color: #dee2e6;
+            color: #878787;
+        }
+
+        /* === BOTÓN INGRESAR === */
+        .btn-uts {
+            background: #C3D730;
+            color: #1A1A1A;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 1rem;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-uts:hover { background: #b0c228; }
+
+        /* === LINK REGISTRO === */
+        .link-registro {
+            color: #7A8A00;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .link-registro:hover { color: #C3D730; }
+
+        /* === ALERTAS === */
+        .alerta-ok {
+            background: #F0F5CC;
+            border: 1px solid #C3D730;
+            color: #7A8A00;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .alerta-error {
+            background: #FFEBEE;
+            border: 1px solid #E53935;
+            color: #B71C1C;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-5">
-                <div class="card p-4">
-                    <div class="card-body">
-                        <div class="text-center mb-4">
-                            <h1 class="logo-title">ProyUts</h1>
-                            <p class="text-muted">Unidades Tecnológicas de Santander</p>
-                        </div>
-                        <% if (typeof query !== 'undefined' && query && query.registered) { %>
-                        <div class="alert alert-success">
-                            <i class="bi bi-check-circle me-2"></i>Cuenta creada exitosamente. Ya puedes iniciar sesión.
-                        </div>
-                        <% } %>
-                        <% if (error) { %>
-                        <div class="alert alert-danger">
-                            <i class="bi bi-exclamation-circle me-2"></i><%= error %>
-                        </div>
-                        <% } %>
-                        <form action="/login" method="POST">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Correo electrónico</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" name="email" class="form-control"
-                                           placeholder="ejemplo@uts.edu.co" required>
-                                </div>
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label fw-bold">Contraseña</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                    <input type="password" name="contrasena" class="form-control"
-                                           placeholder="Tu contraseña" required>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
-                                <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar
-                            </button>
-                        </form>
-                        <hr>
-                        <p class="text-center mb-0">
-                            ¿No tienes cuenta?
-                            <a href="/registro" class="text-decoration-none fw-bold">Regístrate aquí</a>
-                        </p>
+                <div class="card-login">
+                    <div class="card-accent"></div>
+
+                    <div class="text-center mb-4">
+                        <div class="logo-title">ProyUts</div>
+                        <p class="logo-sub mb-0">Unidades Tecnológicas de Santander</p>
                     </div>
+
+                    <% if (typeof query !== 'undefined' && query && query.registered) { %>
+                    <div class="alerta-ok">
+                        <i class="bi bi-check-circle me-2"></i>Cuenta creada exitosamente. Ya puedes iniciar sesión.
+                    </div>
+                    <% } %>
+                    <% if (error) { %>
+                    <div class="alerta-error">
+                        <i class="bi bi-exclamation-circle me-2"></i><%= error %>
+                    </div>
+                    <% } %>
+
+                    <form action="/login" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Correo electrónico</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" name="email" class="form-control"
+                                       placeholder="ejemplo@uts.edu.co" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Contraseña</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" name="contrasena" class="form-control"
+                                       placeholder="Tu contraseña" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-uts">
+                            <i class="bi bi-box-arrow-in-right"></i>Ingresar
+                        </button>
+                    </form>
+
+                    <hr class="my-3">
+                    <p class="text-center mb-0 text-muted">
+                        ¿No tienes cuenta?
+                        <a href="/registro" class="link-registro">Regístrate aquí</a>
+                    </p>
                 </div>
             </div>
         </div>

@@ -3,43 +3,119 @@
 <head>
     <%- include('../partials/head', { titulo: 'Chat' }) %>
     <style>
+        :root {
+            --verde-uts: #C3D730;
+            --verde-uts-suave: #F0F5CC;
+            --verde-uts-oscuro: #7A8A00;
+            --gris-claro: #B3B3B3;
+            --gris-medio: #878787;
+            --fondo: #F5F5F5;
+            --oscuro: #1A1A1A;
+        }
+
+        body { background-color: var(--fondo); }
+
+        /* === BOTÓN VOLVER === */
+        .btn-volver {
+            background: transparent;
+            border: 1px solid var(--gris-medio);
+            color: var(--gris-medio);
+            border-radius: 10px;
+            padding: 4px 10px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s, color 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .btn-volver:hover { border-color: var(--oscuro); color: var(--oscuro); }
+
+        /* === HEADER CARD === */
+        .card-header-chat {
+            border: 1px solid #E5E5E5 !important;
+            border-bottom: none !important;
+            border-radius: 16px 16px 0 0;
+            background: var(--bg-card, #fff);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* === AVATAR === */
+        .avatar-sm {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: var(--verde-uts);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; color: var(--oscuro); font-size: 0.9rem; flex-shrink: 0;
+        }
+
+        /* === CHAT BOX === */
         .chat-box {
             height: 450px; overflow-y: auto; padding: 16px;
             display: flex; flex-direction: column; gap: 10px;
-            background: var(--bg-input); border-radius: 12px;
+            background: var(--bg-input, #F5F5F5);
+            border-left: 1px solid #E5E5E5;
+            border-right: 1px solid #E5E5E5;
         }
+
+        /* === BURBUJAS === */
         .burbuja {
             max-width: 70%; padding: 10px 14px; border-radius: 18px;
             font-size: 0.93rem; word-break: break-word;
         }
         .burbuja.mia {
-            background-color: #1a237e; color: white;
-            align-self: flex-end; border-bottom-right-radius: 4px;
+            background-color: var(--verde-uts);
+            color: var(--oscuro);
+            font-weight: 600;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
         }
         .burbuja.suya {
-            background-color: var(--bg-card); color: var(--text-primary);
-            align-self: flex-start; border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background-color: var(--bg-card, #fff);
+            color: var(--text-primary, #1A1A1A);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
         }
         .hora { font-size: 0.72rem; opacity: 0.7; margin-top: 3px; }
-        .avatar-sm {
-            width: 42px; height: 42px; border-radius: 50%;
-            background: linear-gradient(135deg, #1a237e, #3949ab);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; color: white; font-size: 0.9rem; flex-shrink: 0;
+
+        /* === INPUT === */
+        .card-footer-chat {
+            border: 1px solid #E5E5E5 !important;
+            border-top: 1px solid #E5E5E5 !important;
+            border-radius: 0 0 16px 16px;
+            background: var(--bg-card, #fff);
+            padding: 12px;
         }
         .input-mensaje {
-            border-radius: 24px; border: 2px solid var(--border-color);
-            padding: 10px 18px; font-size: 0.95rem; resize: none;
-            background: var(--bg-input); color: var(--text-primary);
+            border-radius: 24px;
+            border: 2px solid #E5E5E5;
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            resize: none;
+            background: var(--bg-input, #F5F5F5);
+            color: var(--text-primary, #1A1A1A);
+            transition: border-color 0.2s;
         }
-        .input-mensaje:focus { border-color: #1a237e; box-shadow: none; }
+        .input-mensaje:focus {
+            border-color: var(--verde-uts);
+            box-shadow: none;
+            outline: none;
+        }
+
+        /* === BOTÓN ENVIAR === */
         .btn-enviar {
             width: 46px; height: 46px; border-radius: 50%;
-            background-color: #1a237e; border: none; color: white;
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            background-color: var(--verde-uts);
+            border: none; color: var(--oscuro);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; cursor: pointer;
+            transition: background 0.2s;
+            font-size: 1rem;
         }
-        .btn-enviar:hover { background-color: #283593; }
+        .btn-enviar:hover { background-color: #b0c228; }
     </style>
 </head>
 <body>
@@ -47,22 +123,26 @@
     <div class="container py-4">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card mb-0" style="border-radius:16px 16px 0 0;">
-                    <div class="d-flex align-items-center gap-3 p-3">
-                        <a href="/chat" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i></a>
-                        <div class="avatar-sm">
-                            <%= destinatario.nombre.charAt(0) %><%= destinatario.apellido.charAt(0) %>
-                        </div>
-                        <div>
-                            <p class="fw-bold mb-0"><%= destinatario.getNombreCompleto() %></p>
-                            <small class="text-muted"><%= destinatario.programa %> · Código: <%= destinatario.codigo %></small>
-                        </div>
+
+                <!-- Header -->
+                <div class="card-header-chat">
+                    <a href="/chat" class="btn-volver"><i class="bi bi-arrow-left"></i></a>
+                    <div class="avatar-sm">
+                        <%= destinatario.nombre.charAt(0) %><%= destinatario.apellido.charAt(0) %>
+                    </div>
+                    <div>
+                        <p class="fw-bold mb-0"><%= destinatario.getNombreCompleto() %></p>
+                        <small class="text-muted">
+                            <%= destinatario.programa %> · Código: <%= destinatario.codigo %>
+                        </small>
                     </div>
                 </div>
+
+                <!-- Mensajes -->
                 <div class="chat-box" id="chatBox">
                     <% if (mensajes.length === 0) { %>
                     <div class="text-center text-muted my-auto">
-                        <i class="bi bi-chat-dots fs-1 d-block mb-2"></i>
+                        <i class="bi bi-chat-dots fs-1 d-block mb-2" style="color:var(--gris-medio);"></i>
                         <p>Aún no hay mensajes. ¡Di hola!</p>
                     </div>
                     <% } else { %>
@@ -79,7 +159,9 @@
                         <% }) %>
                     <% } %>
                 </div>
-                <div class="card p-3" style="border-radius:0 0 16px 16px; border-top:1px solid var(--border-color);">
+
+                <!-- Input -->
+                <div class="card-footer-chat">
                     <form action="/chat/<%= destinatario.id %>" method="POST">
                         <div class="d-flex align-items-center gap-2">
                             <textarea name="contenido" class="form-control input-mensaje"
@@ -91,6 +173,7 @@
                         </div>
                     </form>
                 </div>
+
             </div>
         </div>
     </div>
