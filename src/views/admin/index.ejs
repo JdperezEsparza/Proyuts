@@ -3,24 +3,16 @@
 <head>
     <%- include('../partials/head', { titulo: 'Panel Admin' }) %>
     <style>
-        .stat-card {
-            border-radius: 16px; border: none;
-            box-shadow: var(--shadow); padding: 20px;
-            background: var(--bg-card);
-        }
-        .stat-numero { font-size: 2rem; font-weight: 800; line-height: 1; }
-        .admin-banner {
-            background: linear-gradient(135deg, #1a237e, #3949ab);
-            color: white; border-radius: 16px; padding: 20px 24px;
-        }
-        .tabla-card { border: none; border-radius: 16px; box-shadow: var(--shadow); }
+        .stat-card { border-radius: 16px; border: none; box-shadow: var(--shadow); padding: 20px; background: var(--bg-card); }
+        .admin-banner { background: linear-gradient(135deg, #1a237e, #3949ab); color: white; border-radius: 16px; padding: 20px 24px; }
+        .acceso-card { border-radius: 12px; border: none; box-shadow: var(--shadow); color: inherit; text-decoration: none; transition: transform 0.2s; }
+        .acceso-card:hover { transform: translateY(-3px); color: inherit; }
     </style>
 </head>
 <body>
     <%- include('../partials/navbar') %>
     <div class="container py-4">
 
-        <!-- Encabezado -->
         <div class="d-flex align-items-center mb-4">
             <a href="/dashboard" class="btn btn-outline-secondary btn-sm me-3"><i class="bi bi-arrow-left"></i></a>
             <h4 class="fw-bold mb-0">
@@ -28,92 +20,102 @@
             </h4>
         </div>
 
-        <!-- Banner -->
         <div class="admin-banner mb-4">
             <h5 class="fw-bold mb-1">Bienvenido, <%= usuario.nombre %></h5>
-            <p class="mb-0 opacity-75">Desde aquí puedes gestionar usuarios, cursos y ver estadísticas generales del sistema.</p>
+            <p class="mb-0 opacity-75">Desde aquí puedes gestionar usuarios, profesores, cursos y ver estadísticas generales del sistema.</p>
         </div>
 
-        <!-- Estadísticas generales -->
+        <!-- Estadísticas -->
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-4">
                 <div class="stat-card text-center">
                     <i class="bi bi-people-fill fs-2 text-primary mb-2 d-block"></i>
-                    <div class="stat-numero text-primary"><%= totalUsuarios %></div>
-                    <small class="text-muted">Estudiantes registrados</small>
+                    <h3 class="fw-bold text-primary mb-0"><%= totalUsuarios %></h3>
+                    <small class="text-muted">Estudiantes</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-4">
+                <div class="stat-card text-center">
+                    <i class="bi bi-person-workspace fs-2 text-info mb-2 d-block"></i>
+                    <h3 class="fw-bold text-info mb-0"><%= totalProfesores %></h3>
+                    <small class="text-muted">Profesores</small>
                 </div>
             </div>
             <div class="col-6 col-md-4">
                 <div class="stat-card text-center">
                     <i class="bi bi-folder2-open fs-2 text-success mb-2 d-block"></i>
-                    <div class="stat-numero text-success"><%= totalProyectos %></div>
+                    <h3 class="fw-bold text-success mb-0"><%= totalProyectos %></h3>
                     <small class="text-muted">Proyectos totales</small>
                 </div>
             </div>
             <div class="col-6 col-md-4">
                 <div class="stat-card text-center">
                     <i class="bi bi-check-circle-fill fs-2 text-success mb-2 d-block"></i>
-                    <div class="stat-numero text-success"><%= totalTerminados %></div>
-                    <small class="text-muted">Proyectos terminados</small>
+                    <h3 class="fw-bold text-success mb-0"><%= totalTerminados %></h3>
+                    <small class="text-muted">Proyectos aprobados</small>
                 </div>
             </div>
-            <div class="col-6 col-md-6">
+            <div class="col-6 col-md-4">
                 <div class="stat-card text-center">
                     <i class="bi bi-book-fill fs-2 text-warning mb-2 d-block"></i>
-                    <div class="stat-numero text-warning"><%= totalCursos %></div>
+                    <h3 class="fw-bold text-warning mb-0"><%= totalCursos %></h3>
                     <small class="text-muted">Cursos activos</small>
                 </div>
             </div>
-            <div class="col-6 col-md-6">
+            <div class="col-6 col-md-4">
                 <div class="stat-card text-center">
                     <i class="bi bi-chat-dots-fill fs-2 text-info mb-2 d-block"></i>
-                    <div class="stat-numero text-info"><%= totalMensajes %></div>
-                    <small class="text-muted">Mensajes enviados</small>
+                    <h3 class="fw-bold text-info mb-0"><%= totalMensajes %></h3>
+                    <small class="text-muted">Mensajes</small>
                 </div>
             </div>
         </div>
 
         <!-- Accesos rápidos -->
         <div class="row g-3 mb-4">
-            <div class="col-md-4">
-                <a href="/admin/usuarios" class="card p-3 d-flex flex-row align-items-center gap-3 text-decoration-none"
-                   style="border-radius:12px; border:none; box-shadow:var(--shadow); color:inherit;">
+            <div class="col-md-3">
+                <a href="/admin/usuarios" class="acceso-card card p-3 d-flex flex-row align-items-center gap-3">
                     <i class="bi bi-people-fill fs-2 text-primary"></i>
                     <div>
-                        <p class="fw-bold mb-0">Gestionar Usuarios</p>
-                        <small class="text-muted">Ver, buscar y eliminar estudiantes</small>
+                        <p class="fw-bold mb-0 small">Estudiantes</p>
+                        <small class="text-muted">Ver y gestionar</small>
                     </div>
                 </a>
             </div>
-            <div class="col-md-4">
-                <a href="/admin/cursos" class="card p-3 d-flex flex-row align-items-center gap-3 text-decoration-none"
-                   style="border-radius:12px; border:none; box-shadow:var(--shadow); color:inherit;">
+            <div class="col-md-3">
+                <a href="/admin/profesores" class="acceso-card card p-3 d-flex flex-row align-items-center gap-3">
+                    <i class="bi bi-person-workspace fs-2 text-info"></i>
+                    <div>
+                        <p class="fw-bold mb-0 small">Profesores</p>
+                        <small class="text-muted">Asignar cursos</small>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="/admin/cursos" class="acceso-card card p-3 d-flex flex-row align-items-center gap-3">
                     <i class="bi bi-book-fill fs-2 text-warning"></i>
                     <div>
-                        <p class="fw-bold mb-0">Gestionar Cursos</p>
-                        <small class="text-muted">Crear, editar y eliminar cursos</small>
+                        <p class="fw-bold mb-0 small">Cursos</p>
+                        <small class="text-muted">CRUD de cursos</small>
                     </div>
                 </a>
             </div>
-            <div class="col-md-4">
-                <a href="/anuncios/nuevo" class="card p-3 d-flex flex-row align-items-center gap-3 text-decoration-none"
-                   style="border-radius:12px; border:none; box-shadow:var(--shadow); color:inherit;">
+            <div class="col-md-3">
+                <a href="/anuncios/nuevo" class="acceso-card card p-3 d-flex flex-row align-items-center gap-3">
                     <i class="bi bi-megaphone-fill fs-2 text-danger"></i>
                     <div>
-                        <p class="fw-bold mb-0">Nuevo Anuncio</p>
-                        <small class="text-muted">Publicar anuncio para estudiantes</small>
+                        <p class="fw-bold mb-0 small">Anuncio</p>
+                        <small class="text-muted">Publicar nuevo</small>
                     </div>
                 </a>
             </div>
         </div>
 
         <div class="row g-4">
-            <!-- Últimos usuarios registrados -->
+            <!-- Últimos registrados -->
             <div class="col-md-6">
-                <div class="tabla-card card p-3">
-                    <h6 class="fw-bold mb-3">
-                        <i class="bi bi-clock-history me-2 text-primary"></i>Últimos estudiantes registrados
-                    </h6>
+                <div class="card p-3" style="border:none; border-radius:16px; box-shadow:var(--shadow);">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-clock-history me-2 text-primary"></i>Últimos estudiantes</h6>
                     <% ultimosUsuarios.forEach(u => { %>
                     <div class="d-flex align-items-center gap-3 py-2 border-bottom">
                         <div style="width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,#1a237e,#3949ab); display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:0.85rem; flex-shrink:0;">
@@ -123,20 +125,16 @@
                             <p class="fw-bold mb-0 small"><%= u.nombre %> <%= u.apellido %></p>
                             <small class="text-muted"><%= u.programa %></small>
                         </div>
-                        <small class="text-muted">
-                            <%= new Date(u.fecha_registro).toLocaleDateString('es-CO') %>
-                        </small>
+                        <small class="text-muted"><%= new Date(u.fecha_registro).toLocaleDateString('es-CO') %></small>
                     </div>
                     <% }) %>
                 </div>
             </div>
 
-            <!-- Top 5 estudiantes -->
+            <!-- Top 5 -->
             <div class="col-md-6">
-                <div class="tabla-card card p-3">
-                    <h6 class="fw-bold mb-3">
-                        <i class="bi bi-trophy-fill me-2 text-warning"></i>Top 5 estudiantes
-                    </h6>
+                <div class="card p-3" style="border:none; border-radius:16px; box-shadow:var(--shadow);">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-trophy-fill me-2 text-warning"></i>Top 5 estudiantes</h6>
                     <% topEstudiantes.forEach((u, i) => { %>
                     <div class="d-flex align-items-center gap-3 py-2 border-bottom">
                         <span class="fw-bold text-muted">#<%= i + 1 %></span>

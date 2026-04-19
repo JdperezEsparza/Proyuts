@@ -3,7 +3,6 @@
 // src/middlewares/auth.js
 // ============================================
 
-// Verifica que el usuario esté autenticado
 function requireAuth(req, res, next) {
     if (req.session && req.session.usuario) {
         next();
@@ -12,7 +11,6 @@ function requireAuth(req, res, next) {
     }
 }
 
-// Verifica que sea administrador
 function requireAdmin(req, res, next) {
     if (req.session && req.session.usuario && req.session.usuario.rol === 'admin') {
         next();
@@ -21,4 +19,13 @@ function requireAdmin(req, res, next) {
     }
 }
 
-module.exports = { requireAuth, requireAdmin };
+function requireProfesor(req, res, next) {
+    if (req.session && req.session.usuario &&
+        (req.session.usuario.rol === 'profesor' || req.session.usuario.rol === 'admin')) {
+        next();
+    } else {
+        res.redirect('/dashboard');
+    }
+}
+
+module.exports = { requireAuth, requireAdmin, requireProfesor };

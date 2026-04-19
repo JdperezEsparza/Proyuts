@@ -1,235 +1,100 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <%- include('../partials/head', { titulo: 'Mis Proyectos' }) %>
     <style>
-        :root {
-            --verde-uts: #C3D730;
-            --verde-uts-suave: #F0F5CC;
-            --verde-uts-oscuro: #7A8A00;
-            --gris-claro: #B3B3B3;
-            --gris-medio: #878787;
-            --fondo: #F5F5F5;
-            --oscuro: #1A1A1A;
-        }
-
-        body { background-color: var(--fondo); }
-
-        /* === BOTÓN VOLVER === */
-        .btn-volver {
-            background: transparent;
-            border: 1px solid var(--gris-medio);
-            color: var(--gris-medio);
-            border-radius: 10px;
-            padding: 4px 12px;
-            font-size: 0.9rem;
-            transition: border-color 0.2s, color 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-        }
-        .btn-volver:hover { border-color: var(--oscuro); color: var(--oscuro); }
-
-        /* === BOTÓN PRIMARIO UTS === */
-        .btn-uts {
-            background: var(--verde-uts);
-            color: var(--oscuro);
-            font-weight: 700;
-            border: none;
-            border-radius: 10px;
-            padding: 7px 18px;
-            font-size: 0.9rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.2s;
-        }
-        .btn-uts:hover { background: #b0c228; color: var(--oscuro); }
-
-        /* === BOTONES FILTRO === */
-        .btn-filtro {
-            background: transparent;
-            border: 1px solid var(--gris-medio);
-            color: var(--gris-medio);
-            border-radius: 8px;
-            padding: 4px 14px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-filtro:hover, .btn-filtro.active {
-            background: var(--verde-uts);
-            border-color: var(--verde-uts);
-            color: var(--oscuro);
-            font-weight: 700;
-        }
-        .btn-filtro-terminado:hover, .btn-filtro-terminado.active {
-            background: #2e7d32;
-            border-color: #2e7d32;
-            color: white;
-        }
-        .btn-filtro-progreso:hover, .btn-filtro-progreso.active {
-            background: #F57C00;
-            border-color: #F57C00;
-            color: white;
-        }
-
-        /* === STAT CARDS === */
-        .stat-card {
-            border-radius: 16px;
-            border: 1px solid #E5E5E5 !important;
-            background: #fff;
-        }
-        .stat-card h2 { font-size: 2rem; }
-        .stat-num-total    { color: var(--verde-uts-oscuro); }
-        .stat-num-terminado { color: #2e7d32; }
-        .stat-num-progreso  { color: #F57C00; }
-        .stat-num-faltan   { color: #E53935; }
-
-        /* === BARRA DE PROGRESO === */
-        .card-progreso {
-            border: 1px solid #E5E5E5 !important;
-            border-radius: 16px;
-            background: #fff;
-        }
-        .progress-bar-uts {
-            background-color: var(--verde-uts) !important;
-            border-radius: 8px;
-        }
-
-        /* === CARDS DE PROYECTOS === */
+        .stat-card { border-radius: 16px; border: none; box-shadow: var(--shadow); }
         .proyecto-card {
-            border: 1px solid #E5E5E5 !important;
+            border: none;
             border-radius: 12px;
-            border-left: 5px solid var(--verde-uts) !important;
-            background: #fff;
-            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
         }
-        .proyecto-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(195,215,48,0.15);
-        }
-        .proyecto-card.terminado  { border-left-color: #2e7d32 !important; }
-        .proyecto-card.en_progreso { border-left-color: #F57C00 !important; }
-
-        /* === BADGES ESTADO === */
-        .badge-terminado   { background-color: #2e7d32; color: white; }
-        .badge-en_progreso { background-color: #F57C00; color: white; }
-
-        /* === BOTONES EDITAR / ELIMINAR === */
-        .btn-editar {
-            background: transparent;
-            border: 1px solid var(--verde-uts-oscuro);
-            color: var(--verde-uts-oscuro);
-            border-radius: 8px;
-            padding: 4px 10px;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-        }
-        .btn-editar:hover {
-            background: var(--verde-uts);
-            border-color: var(--verde-uts);
-            color: var(--oscuro);
-        }
-        .btn-eliminar {
-            background: transparent;
-            border: 1px solid #E53935;
-            color: #E53935;
-            border-radius: 8px;
-            padding: 4px 10px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-eliminar:hover { background: #E53935; color: white; }
-
-        /* === CARD VACÍO === */
-        .card-vacio {
-            border: 1px solid #E5E5E5 !important;
-            border-radius: 16px;
-            background: #fff;
-        }
-
-        /* === ICONO TÍTULO === */
-        .icon-titulo { color: var(--verde-uts-oscuro); }
+        .proyecto-card:hover { transform: translateY(-3px); }
+        .proyecto-card.terminado   { border-left: 5px solid #2e7d32; }
+        .proyecto-card.en_progreso { border-left: 5px solid #e65100; }
+        .proyecto-card.enviado     { border-left: 5px solid #1a237e; }
+        .proyecto-card.rechazado   { border-left: 5px solid #c62828; }
     </style>
 </head>
 <body>
     <%- include('../partials/navbar') %>
     <div class="container py-4">
 
+        <!-- Encabezado -->
         <div class="d-flex align-items-center justify-content-between mb-4">
             <div class="d-flex align-items-center">
-                <a href="/dashboard" class="btn-volver me-3"><i class="bi bi-arrow-left"></i></a>
+                <a href="/dashboard" class="btn btn-outline-secondary btn-sm me-3">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
                 <h4 class="fw-bold mb-0">
-                    <i class="bi bi-folder2-open me-2 icon-titulo"></i>Mis Proyectos
+                    <i class="bi bi-folder2-open me-2 text-primary"></i>Mis Proyectos
                 </h4>
             </div>
-            <a href="/proyectos/nuevo" class="btn-uts">
-                <i class="bi bi-plus-circle"></i>Nuevo proyecto
+            <a href="/proyectos/nuevo" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i>Nuevo proyecto
             </a>
         </div>
 
-        <!-- Stats -->
+        <!-- Tarjetas de resumen -->
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
                 <div class="stat-card card p-3 text-center">
-                    <h2 class="fw-bold stat-num-total mb-0"><%= total %></h2>
+                    <h2 class="fw-bold text-primary mb-0"><%= total %></h2>
                     <small class="text-muted">Total proyectos</small>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="stat-card card p-3 text-center">
-                    <h2 class="fw-bold stat-num-terminado mb-0"><%= terminados %></h2>
-                    <small class="text-muted">Terminados</small>
+                    <h2 class="fw-bold text-success mb-0"><%= terminados %></h2>
+                    <small class="text-muted">Aprobados</small>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="stat-card card p-3 text-center">
-                    <h2 class="fw-bold stat-num-progreso mb-0"><%= total - terminados %></h2>
+                    <h2 class="fw-bold text-warning mb-0"><%= total - terminados %></h2>
                     <small class="text-muted">En progreso</small>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="stat-card card p-3 text-center">
-                    <h2 class="fw-bold stat-num-faltan mb-0"><%= faltan %></h2>
+                    <h2 class="fw-bold text-danger mb-0"><%= faltan %></h2>
                     <small class="text-muted">Faltan para graduarse</small>
                 </div>
             </div>
         </div>
 
         <!-- Barra de progreso -->
-        <div class="card-vacio card p-3 mb-4">
+        <div class="card p-3 mb-4" style="border:none; border-radius:16px; box-shadow:var(--shadow);">
             <div class="d-flex justify-content-between mb-1">
                 <small class="fw-bold">Progreso hacia la graduación</small>
-                <small class="text-muted"><%= terminados %> / 52 proyectos terminados</small>
+                <small class="text-muted"><%= terminados %> / 52 proyectos aprobados</small>
             </div>
-            <div class="progress" style="height:12px; border-radius:8px; background:#EEEEEE;">
-                <div class="progress-bar-uts progress-bar" role="progressbar"
+            <div class="progress" style="height:12px; border-radius:8px;">
+                <div class="progress-bar bg-success" role="progressbar"
                      style="width:<%= Math.min(100,(terminados/52)*100) %>%; border-radius:8px;">
                 </div>
             </div>
-            <small class="text-muted mt-1 d-block"><%= Math.round((terminados/52)*100) %>% completado</small>
+            <small class="text-muted mt-1"><%= Math.round((terminados/52)*100) %>% completado</small>
         </div>
 
         <!-- Filtros -->
-        <div class="d-flex gap-2 mb-3">
-            <button class="btn-filtro active" id="f-todos" onclick="filtrar('todos', this)">Todos</button>
-            <button class="btn-filtro btn-filtro-terminado" id="f-terminado" onclick="filtrar('terminado', this)">Terminados</button>
-            <button class="btn-filtro btn-filtro-progreso" id="f-progreso" onclick="filtrar('en_progreso', this)">En progreso</button>
+        <div class="d-flex gap-2 mb-3 flex-wrap">
+            <button class="btn btn-sm btn-primary" onclick="filtrar('todos')">Todos</button>
+            <button class="btn btn-sm btn-outline-success" onclick="filtrar('terminado')">Aprobados</button>
+            <button class="btn btn-sm btn-outline-primary" onclick="filtrar('enviado')">Enviados</button>
+            <button class="btn btn-sm btn-outline-danger" onclick="filtrar('rechazado')">Rechazados</button>
+            <button class="btn btn-sm btn-outline-warning" onclick="filtrar('en_progreso')">En progreso</button>
         </div>
 
-        <!-- Lista -->
+        <!-- Lista de proyectos -->
         <% if (proyectos.length === 0) { %>
-        <div class="card-vacio card p-5 text-center">
-            <i class="bi bi-folder2-open fs-1 d-block mb-3" style="color:var(--gris-medio);"></i>
+        <div class="card p-5 text-center" style="border:none; border-radius:16px; box-shadow:var(--shadow);">
+            <i class="bi bi-folder2-open fs-1 text-muted d-block mb-3"></i>
             <h5 class="text-muted">Aún no tienes proyectos registrados</h5>
-            <a href="/proyectos/nuevo" class="btn-uts mt-2 mx-auto" style="width:fit-content;">
-                <i class="bi bi-plus-circle"></i>Registrar mi primer proyecto
+            <a href="/proyectos/nuevo" class="btn btn-primary mt-2">
+                <i class="bi bi-plus-circle me-1"></i>Registrar mi primer proyecto
             </a>
         </div>
         <% } else { %>
@@ -238,31 +103,83 @@
             <div class="proyecto-card card p-3 mb-3 <%= p.estado %>" data-estado="<%= p.estado %>">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
-                        <div class="d-flex align-items-center gap-2 mb-1">
+
+                        <!-- Título y badge de estado -->
+                        <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                             <h6 class="fw-bold mb-0"><%= p.titulo %></h6>
-                            <span class="badge <%= p.estado === 'terminado' ? 'badge-terminado' : 'badge-en_progreso' %>">
-                                <%= p.estado === 'terminado' ? 'Terminado' : 'En progreso' %>
+                            <span class="badge
+                                <%= p.estado === 'terminado'  ? 'bg-success' :
+                                   p.estado === 'enviado'    ? 'bg-primary'  :
+                                   p.estado === 'rechazado'  ? 'bg-danger'   :
+                                   'bg-warning text-dark' %>">
+                                <%= p.estado === 'terminado'  ? 'Aprobado'              :
+                                   p.estado === 'enviado'    ? 'Enviado para revisión'  :
+                                   p.estado === 'rechazado'  ? 'Rechazado'              :
+                                   'En progreso' %>
                             </span>
                         </div>
+
+                        <!-- Descripción -->
                         <% if (p.descripcion) { %>
                         <p class="text-muted small mb-1"><%= p.descripcion %></p>
                         <% } %>
-                        <div class="d-flex gap-3 mt-1">
-                            <small class="text-muted"><i class="bi bi-book me-1"></i><%= p.nombreCurso || 'Sin curso' %></small>
-                            <small class="text-muted"><i class="bi bi-calendar me-1"></i><%= new Date(p.fechaRealizacion).toLocaleDateString('es-CO') %></small>
-                            <small class="text-muted"><i class="bi bi-bookmark me-1"></i>Semestre <%= p.semestre %></small>
+
+                        <!-- Info -->
+                        <div class="d-flex gap-3 mt-1 flex-wrap">
+                            <small class="text-muted">
+                                <i class="bi bi-book me-1"></i><%= p.nombreCurso || 'Sin curso' %>
+                            </small>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar me-1"></i>
+                                <%= new Date(p.fechaRealizacion).toLocaleDateString('es-CO') %>
+                            </small>
+                            <small class="text-muted">
+                                <i class="bi bi-bookmark me-1"></i>Semestre <%= p.semestre %>
+                            </small>
                         </div>
+
+                        <!-- Motivo de rechazo (visible solo para el estudiante) -->
+                        <% if (p.estado === 'rechazado' && p.comentarioProfesor) { %>
+                        <div class="alert alert-danger py-2 px-3 mt-2 mb-0 small">
+                            <i class="bi bi-x-circle me-1"></i>
+                            <strong>Motivo del rechazo:</strong> <%= p.comentarioProfesor %>
+                            <br>
+                            <small class="opacity-75">Puedes editar tu proyecto y enviarlo nuevamente para revisión.</small>
+                        </div>
+                        <% } %>
+
+                        <!-- Mensaje si está aprobado -->
+                        <% if (p.estado === 'terminado') { %>
+                        <div class="alert alert-success py-2 px-3 mt-2 mb-0 small">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Este proyecto fue <strong>aprobado</strong> por el profesor y cuenta para tu graduación.
+                        </div>
+                        <% } %>
+
+                        <!-- Mensaje si está enviado -->
+                        <% if (p.estado === 'enviado') { %>
+                        <div class="alert alert-info py-2 px-3 mt-2 mb-0 small">
+                            <i class="bi bi-hourglass-split me-1"></i>
+                            Este proyecto está <strong>en espera de revisión</strong> por el profesor.
+                        </div>
+                        <% } %>
+
                     </div>
+
+                    <!-- Botones de acción -->
                     <div class="d-flex gap-2 ms-3">
-                        <a href="/proyectos/<%= p.id %>/editar" class="btn-editar">
+                        <!-- Solo se puede editar si no está aprobado -->
+                        <% if (p.estado !== 'terminado') { %>
+                        <a href="/proyectos/<%= p.id %>/editar" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-pencil"></i>
                         </a>
                         <form action="/proyectos/<%= p.id %>/eliminar" method="POST"
                               onsubmit="return confirm('¿Seguro que quieres eliminar este proyecto?')">
-                            <button type="submit" class="btn-eliminar">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </form>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -273,9 +190,7 @@
     </div>
     <%- include('../partials/scripts') %>
     <script>
-        function filtrar(estado, btn) {
-            document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        function filtrar(estado) {
             document.querySelectorAll('[data-estado]').forEach(t => {
                 t.style.display = (estado === 'todos' || t.dataset.estado === estado) ? 'block' : 'none';
             });

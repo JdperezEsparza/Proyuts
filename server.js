@@ -21,6 +21,7 @@ const chatbotRoutes     = require('./src/routes/chatbotRoutes');
 const rankingRoutes     = require('./src/routes/rankingRoutes');
 const logroRoutes       = require('./src/routes/logroRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
+const profesorRoutes = require('./src/routes/profesorRoutes');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -70,13 +71,20 @@ app.use('/', chatbotRoutes);
 app.use('/', rankingRoutes);
 app.use('/', logroRoutes);
 app.use('/', adminRoutes);
+app.use('/', profesorRoutes);
 
 
 // Dashboard (protegido)
-app.get('/dashboard', requireAuth, (req, res) => {
-    res.render('dashboard', { titulo: 'Panel Principal' });
+app.get('/dashboard', requireAuth, async (req, res) => {
+    try {
+        const Usuario = require('./src/models/Usuario');
+        const usuarioActualizado = await Usuario.buscarPorId(req.session.usuario.id);
+        req.session.usuario.puntos = usuarioActualizado.puntos;
+        res.render('dashboard', { titulo: 'Panel Principal' });
+    } catch (err) {
+        res.render('dashboard', { titulo: 'Panel Principal' });
+    }
 });
-
 // ── Iniciar servidor ─────────────────────────
 app.listen(PORT, () => {
     console.log(`ProyUts corriendo en http://localhost:${PORT}`);

@@ -157,15 +157,24 @@
                         <small class="text-muted">Chatbot ProyUts</small>
                     </a>
                 </div>
-                <% if (usuario.rol==='admin' ) { %>
+                <% if (usuario.rol==='profesor' ) { %>
                     <div class="col-md-4 col-6">
-                        <a href="/admin" class="card card-menu p-4 text-center d-block">
-                            <i class="bi bi-shield-fill-check icon" style="color:#e53935;"></i>
-                            <p class="fw-bold mt-2 mb-0">Panel Admin</p>
-                            <small class="text-muted">Gestión del sistema</small>
+                        <a href="/profesor" class="card card-menu p-4 text-center d-block">
+                            <i class="bi bi-person-workspace icon" style="color:#0288d1;"></i>
+                            <p class="fw-bold mt-2 mb-0">Panel Profesor</p>
+                            <small class="text-muted">Revisar proyectos</small>
                         </a>
                     </div>
                     <% } %>
+                        <% if (usuario.rol==='admin' ) { %>
+                            <div class="col-md-4 col-6">
+                                <a href="/admin" class="card card-menu p-4 text-center d-block">
+                                    <i class="bi bi-shield-fill-check icon" style="color:#e53935;"></i>
+                                    <p class="fw-bold mt-2 mb-0">Panel Admin</p>
+                                    <small class="text-muted">Gestión del sistema</small>
+                                </a>
+                            </div>
+                            <% } %>
 
             </div>
 
