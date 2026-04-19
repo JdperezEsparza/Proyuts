@@ -20,6 +20,7 @@ const estadisticaRoutes = require('./src/routes/estadisticaRoutes');
 const chatbotRoutes     = require('./src/routes/chatbotRoutes');
 const rankingRoutes     = require('./src/routes/rankingRoutes');
 const logroRoutes       = require('./src/routes/logroRoutes');
+const adminRoutes = require('./src/routes/adminRoutes');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -68,6 +69,7 @@ app.use('/', estadisticaRoutes);
 app.use('/', chatbotRoutes);
 app.use('/', rankingRoutes);
 app.use('/', logroRoutes);
+app.use('/', adminRoutes);
 
 
 // Dashboard (protegido)

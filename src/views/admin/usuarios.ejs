@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head', { titulo: 'Gestionar Usuarios' }) %>
+</head>
+<body>
+    <%- include('../partials/navbar') %>
+    <div class="container py-4">
+
+        <div class="d-flex align-items-center mb-4">
+            <a href="/admin" class="btn btn-outline-secondary btn-sm me-3"><i class="bi bi-arrow-left"></i></a>
+            <h4 class="fw-bold mb-0">
+                <i class="bi bi-people-fill me-2 text-primary"></i>Gestionar Usuarios
+            </h4>
+        </div>
+
+        <% if (mensaje === 'eliminado') { %>
+        <div class="alert alert-warning alert-dismissible fade show">
+            <i class="bi bi-trash me-2"></i>Usuario eliminado correctamente.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } %>
+
+        <!-- Buscador -->
+        <div class="card p-3 mb-4" style="border:none; border-radius:16px; box-shadow:var(--shadow);">
+            <input type="text" id="buscador" class="form-control"
+                   placeholder="Buscar por nombre, código o programa...">
+        </div>
+
+        <!-- Tabla de usuarios -->
+        <div class="card p-3" style="border:none; border-radius:16px; box-shadow:var(--shadow);">
+            <p class="text-muted small mb-3">Total: <strong><%= usuarios.length %></strong> estudiantes</p>
+            <% if (usuarios.length === 0) { %>
+            <div class="text-center text-muted py-4">
+                <i class="bi bi-people fs-1 d-block mb-2"></i>
+                <p>No hay estudiantes registrados.</p>
+            </div>
+            <% } else { %>
+            <div id="listaUsuarios">
+                <% usuarios.forEach(u => { %>
+                <div class="d-flex align-items-center gap-3 py-2 border-bottom usuario-fila"
+                     data-nombre="<%= u.nombre.toLowerCase() %> <%= u.apellido.toLowerCase() %>"
+                     data-codigo="<%= u.codigo.toLowerCase() %>"
+                     data-programa="<%= u.programa ? u.programa.toLowerCase() : '' %>">
+
+                    <!-- Avatar -->
+                    <div style="width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,#1a237e,#3949ab); display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:0.85rem; flex-shrink:0;">
+                        <%= u.nombre.charAt(0) %><%= u.apellido.charAt(0) %>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="flex-grow-1">
+                        <p class="fw-bold mb-0"><%= u.nombre %> <%= u.apellido %></p>
+                        <small class="text-muted">
+                            <i class="bi bi-person-badge me-1"></i><%= u.codigo %>
+                            &nbsp;·&nbsp;
+                            <i class="bi bi-mortarboard me-1"></i><%= u.programa %>
+                            &nbsp;·&nbsp;
+                            Semestre <%= u.semestre %>
+                        </small>
+                    </div>
+
+                    <!-- Proyectos -->
+                    <div class="text-center d-none d-md-block">
+                        <p class="fw-bold mb-0 text-success"><%= u.terminados %></p>
+                        <small class="text-muted">terminados</small>
+                    </div>
+                    <div class="text-center d-none d-md-block">
+                        <p class="fw-bold mb-0 text-primary"><%= u.puntos %></p>
+                        <small class="text-muted">puntos</small>
+                    </div>
+
+                    <!-- Eliminar -->
+                    <form action="/admin/usuarios/<%= u.id %>/eliminar" method="POST"
+                          onsubmit="return confirm('¿Seguro que quieres eliminar a <%= u.nombre %> <%= u.apellido %>? Esto eliminará todos sus proyectos.')">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+                <% }) %>
+            </div>
+            <% } %>
+        </div>
+    </div>
+
+    <%- include('../partials/scripts') %>
+    <script>
+        document.getElementById('buscador').addEventListener('input', function() {
+            const filtro = this.value.toLowerCase();
+            document.querySelectorAll('.usuario-fila').forEach(fila => {
+                const nombre  = fila.dataset.nombre;
+                const codigo  = fila.dataset.codigo;
+                const programa = fila.dataset.programa;
+                fila.style.display = (nombre.includes(filtro) || codigo.includes(filtro) || programa.includes(filtro))
+                    ? 'flex' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
