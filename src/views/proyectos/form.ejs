@@ -1,3 +1,7 @@
+<%# ============================================
+    ProyUts - Formulario de Proyecto
+    src/views/proyectos/form.ejs
+    ============================================ %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,6 +16,7 @@
     <div class="container py-4">
         <div class="row justify-content-center">
             <div class="col-md-7">
+
                 <div class="d-flex align-items-center mb-4">
                     <a href="/proyectos" class="btn btn-outline-secondary btn-sm me-3">
                         <i class="bi bi-arrow-left"></i>
@@ -23,12 +28,16 @@
                 </div>
 
                 <div class="card p-4" style="border:none; border-radius:16px; box-shadow:var(--shadow);">
+
                     <% if (error) { %>
-                    <div class="alert alert-danger"><i class="bi bi-exclamation-circle me-2"></i><%= error %></div>
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-circle me-2"></i><%= error %>
+                    </div>
                     <% } %>
 
                     <form action="<%= proyecto ? '/proyectos/' + proyecto.id + '/editar' : '/proyectos' %>" method="POST">
 
+                        <!-- Título -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Título <span class="text-danger">*</span></label>
                             <input type="text" name="titulo" class="form-control"
@@ -36,12 +45,14 @@
                                    value="<%= proyecto ? proyecto.titulo : '' %>" required>
                         </div>
 
+                        <!-- Descripción -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Descripción</label>
                             <textarea name="descripcion" class="form-control" rows="3"
                                       placeholder="Describe brevemente el proyecto"><%= proyecto ? proyecto.descripcion : '' %></textarea>
                         </div>
 
+                        <!-- Curso -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Curso</label>
                             <select name="curso_id" class="form-select">
@@ -55,11 +66,14 @@
                         </div>
 
                         <div class="row">
+                            <!-- Fecha -->
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold">Fecha de realización <span class="text-danger">*</span></label>
                                 <input type="date" name="fecha_realizacion" class="form-control"
                                        value="<%= proyecto ? proyecto.fechaRealizacion.toISOString().split('T')[0] : '' %>" required>
                             </div>
+
+                            <!-- Semestre -->
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold">Semestre <span class="text-danger">*</span></label>
                                 <select name="semestre" class="form-select" required>
@@ -70,37 +84,19 @@
                             </div>
                         </div>
 
-                        <!-- Estado: el estudiante solo puede poner en progreso o enviar para revisión -->
+                        <!-- Aviso informativo -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">Estado</label>
-                            <div class="d-flex gap-3 flex-wrap">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="estado"
-                                           value="en_progreso" id="enProgreso"
-                                           <%= !proyecto || proyecto.estado === 'en_progreso' || proyecto.estado === 'rechazado' ? 'checked' : '' %>>
-                                    <label class="form-check-label" for="enProgreso">
-                                        <span class="badge bg-warning text-dark">En progreso</span>
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="estado"
-                                           value="enviado" id="enviado"
-                                           <%= proyecto && proyecto.estado === 'enviado' ? 'checked' : '' %>>
-                                    <label class="form-check-label" for="enviado">
-                                        <span class="badge bg-primary">Enviar para revisión</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="alert alert-info py-2 px-3 mt-2 small">
+                            <div class="alert alert-info small mb-0">
                                 <i class="bi bi-info-circle me-1"></i>
-                                El proyecto será <strong>aprobado por el profesor</strong> del curso correspondiente. Solo los proyectos aprobados cuentan para el ranking y los logros.
+                                Al guardar, el proyecto se enviará automáticamente al <strong>profesor</strong> del curso para su revisión. Solo los proyectos aprobados cuentan para el ranking y los logros.
                             </div>
                         </div>
 
+                        <!-- Botones -->
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary px-4">
-                                <i class="bi bi-<%= proyecto ? 'check-circle' : 'plus-circle' %> me-1"></i>
-                                <%= proyecto ? 'Guardar cambios' : 'Crear proyecto' %>
+                                <i class="bi bi-<%= proyecto ? 'check-circle' : 'send' %> me-1"></i>
+                                <%= proyecto ? 'Guardar y reenviar' : 'Crear y enviar' %>
                             </button>
                             <a href="/proyectos" class="btn btn-outline-secondary px-4">Cancelar</a>
                         </div>

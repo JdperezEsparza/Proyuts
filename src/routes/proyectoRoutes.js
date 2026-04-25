@@ -3,28 +3,23 @@
 // src/routes/proyectoRoutes.js
 // ============================================
 
-const express        = require('express');
-const router         = express.Router();
-const Proyecto       = require('../models/Proyecto');
-const Usuario        = require('../models/Usuario');
-const db             = require('../config/db');
+const express         = require('express');
+const router          = express.Router();
+const Proyecto        = require('../models/Proyecto');
+const Usuario         = require('../models/Usuario');
+const db              = require('../config/db');
 const { requireAuth } = require('../middlewares/auth');
 
 // ── GET /proyectos - Listar todos los proyectos ──
 router.get('/proyectos', requireAuth, async (req, res) => {
     try {
-        const usuarioId = req.session.usuario.id;
-        const proyectos = await Proyecto.obtenerPorUsuario(usuarioId);
-        const total     = await Proyecto.contarTodos(usuarioId);
+        const usuarioId  = req.session.usuario.id;
+        const proyectos  = await Proyecto.obtenerPorUsuario(usuarioId);
+        const total      = await Proyecto.contarTodos(usuarioId);
         const terminados = await Proyecto.contarTerminados(usuarioId);
-        const faltan    = Math.max(0, 52 - terminados);
+        const faltan     = Math.max(0, 52 - terminados);
 
-        res.render('proyectos/index', {
-            proyectos,
-            total,
-            terminados,
-            faltan
-        });
+        res.render('proyectos/index', { proyectos, total, terminados, faltan });
     } catch (err) {
         console.error(err);
         res.redirect('/dashboard');
@@ -35,11 +30,7 @@ router.get('/proyectos', requireAuth, async (req, res) => {
 router.get('/proyectos/nuevo', requireAuth, async (req, res) => {
     try {
         const [cursos] = await db.execute(`SELECT * FROM cursos WHERE activo = true`);
-        res.render('proyectos/form', {
-            proyecto: null,
-            cursos,
-            error: null
-        });
+        res.render('proyectos/form', { proyecto: null, cursos, error: null });
     } catch (err) {
         console.error(err);
         res.redirect('/proyectos');
@@ -49,7 +40,7 @@ router.get('/proyectos/nuevo', requireAuth, async (req, res) => {
 // ── POST /proyectos - Crear proyecto ─────────────
 router.post('/proyectos', requireAuth, async (req, res) => {
     try {
-        const { titulo, descripcion, curso_id, fecha_realizacion, semestre, estado } = req.body;
+        const { titulo, descripcion, curso_id, fecha_realizacion, semestre } = req.body;
         const usuarioId = req.session.usuario.id;
 
         if (!titulo || !fecha_realizacion || !semestre) {
@@ -70,17 +61,8 @@ router.post('/proyectos', requireAuth, async (req, res) => {
             descripcion,
             fechaRealizacion: fecha_realizacion,
             semestre,
-            anio,
-            estado: estado || 'en_progreso'
+            anio
         });
-
-        // Si el estado es terminado, verificar logros y sumar puntos
-        if (estado === 'terminado') {
-            const nuevosLogros = await Usuario.verificarLogros(usuarioId);
-            // Actualizar puntos en la sesión
-            const usuarioActualizado = await Usuario.buscarPorId(usuarioId);
-            req.session.usuario.puntos = usuarioActualizado.puntos;
-        }
 
         res.redirect('/proyectos');
     } catch (err) {
@@ -98,11 +80,7 @@ router.get('/proyectos/:id/editar', requireAuth, async (req, res) => {
         if (!proyecto) return res.redirect('/proyectos');
 
         const [cursos] = await db.execute(`SELECT * FROM cursos WHERE activo = true`);
-        res.render('proyectos/form', {
-            proyecto,
-            cursos,
-            error: null
-        });
+        res.render('proyectos/form', { proyecto, cursos, error: null });
     } catch (err) {
         console.error(err);
         res.redirect('/proyectos');
@@ -112,7 +90,7 @@ router.get('/proyectos/:id/editar', requireAuth, async (req, res) => {
 // ── POST /proyectos/:id/editar - Actualizar proyecto ──
 router.post('/proyectos/:id/editar', requireAuth, async (req, res) => {
     try {
-        const { titulo, descripcion, curso_id, fecha_realizacion, semestre, estado } = req.body;
+        const { titulo, descripcion, curso_id, fecha_realizacion, semestre } = req.body;
         const usuarioId  = req.session.usuario.id;
         const proyectoId = req.params.id;
 
@@ -134,16 +112,8 @@ router.post('/proyectos/:id/editar', requireAuth, async (req, res) => {
             cursoId: curso_id || null,
             fechaRealizacion: fecha_realizacion,
             semestre,
-            anio,
-            estado
+            anio
         });
-
-        // Verificar logros por si cambió a terminado
-        if (estado === 'terminado') {
-            await Usuario.verificarLogros(usuarioId);
-            const usuarioActualizado = await Usuario.buscarPorId(usuarioId);
-            req.session.usuario.puntos = usuarioActualizado.puntos;
-        }
 
         res.redirect('/proyectos');
     } catch (err) {

@@ -3,19 +3,19 @@
 // src/routes/profesorRoutes.js
 // ============================================
 
-const express              = require('express');
-const router               = express.Router();
-const Proyecto             = require('../models/Proyecto');
-const Usuario              = require('../models/Usuario');
+const express = require('express');
+const router = express.Router();
+const Proyecto = require('../models/Proyecto');
+const Usuario = require('../models/Usuario');
 const { requireAuth, requireProfesor } = require('../middlewares/auth');
 
 // ── GET /profesor - Panel del profesor ────────
 router.get('/profesor', requireAuth, requireProfesor, async (req, res) => {
     try {
         const profesorId = req.session.usuario.id;
-        const proyectos  = await Proyecto.obtenerPorProfesor(profesorId);
+        const proyectos = await Proyecto.obtenerPorProfesor(profesorId);
 
-        const enviados   = proyectos.filter(p => p.estado === 'enviado').length;
+        const enviados = proyectos.filter(p => p.estado === 'enviado').length;
         const terminados = proyectos.filter(p => p.estado === 'terminado').length;
         const rechazados = proyectos.filter(p => p.estado === 'rechazado').length;
         const enProgreso = proyectos.filter(p => p.estado === 'en_progreso').length;
@@ -38,12 +38,15 @@ router.get('/profesor', requireAuth, requireProfesor, async (req, res) => {
 router.post('/profesor/proyectos/:id/aprobar', requireAuth, requireProfesor, async (req, res) => {
     try {
         const proyectoId = req.params.id;
-        const proyecto   = await Proyecto.obtenerPorIdAdmin(proyectoId);
+        const proyecto = await Proyecto.obtenerPorIdAdmin(proyectoId);
         if (!proyecto) return res.redirect('/profesor');
 
         await Proyecto.aprobar(proyectoId);
 
-        // Verificar logros del estudiante y sumar puntos
+        // Sumar 10 puntos por proyecto aprobado
+        await Usuario.sumarPuntos(proyecto.usuario_id, 10);
+
+        // Verificar logros del estudiante
         await Usuario.verificarLogros(proyecto.usuario_id);
         const usuarioActualizado = await Usuario.buscarPorId(proyecto.usuario_id);
 
