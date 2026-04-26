@@ -217,7 +217,8 @@ router.post('/admin/cursos/:id/editar', requireAuth, requireAdmin, async (req, r
         }
         await Curso.actualizar(req.params.id, {
             nombre, descripcion, creditos, semestre,
-            activo: activo === 'on' ? true : false
+            activo: activo === 'on' ? true : false,
+            capacidadMaxima: req.body.capacidad_maxima || 40 
         });
         res.redirect('/admin/cursos?msg=actualizado');
     } catch (err) {

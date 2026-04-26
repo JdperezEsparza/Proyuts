@@ -8,22 +8,34 @@ const db = require('../config/db');
 class Curso {
 
     constructor(data) {
-        this.id          = data.id || null;
-        this.nombre      = data.nombre;
-        this.descripcion = data.descripcion || '';
-        this.creditos    = data.creditos || 3;
-        this.semestre    = data.semestre;
-        this.activo      = data.activo !== undefined ? data.activo : true;
-        this.fechaCreacion = data.fecha_creacion || null;
-        // Extra para vistas
-        this.inscrito    = data.inscrito || false;
+        this.id              = data.id || null;
+        this.nombre          = data.nombre;
+        this.descripcion     = data.descripcion || '';
+        this.creditos        = data.creditos || 3;
+        this.semestre        = data.semestre;
+        this.activo          = data.activo !== undefined ? data.activo : true;
+        this.capacidadMaxima = data.capacidad_maxima || 40;
+        this.inscritos       = data.inscritos || 0;
+        this.fechaCreacion   = data.fecha_creacion || null;
+        this.inscrito        = data.inscrito || false;
+        this.tieneProfesor   = data.tiene_profesor || false;
+        this.nombreProfesor  = data.nombre_profesor || null;
     }
 
     // ── Obtener todos los cursos ─────────────────
     static async obtenerTodos() {
-        const [rows] = await db.execute(
-            `SELECT * FROM cursos ORDER BY semestre ASC, nombre ASC`
-        );
+        const [rows] = await db.execute(`
+            SELECT c.*,
+                COUNT(DISTINCT i.usuario_id) AS inscritos,
+                COUNT(DISTINCT pc.profesor_id) AS tiene_profesor,
+                GROUP_CONCAT(DISTINCT CONCAT(u.nombre, ' ', u.apellido) SEPARATOR ', ') AS nombre_profesor
+            FROM cursos c
+            LEFT JOIN inscripciones i ON i.curso_id = c.id
+            LEFT JOIN profesor_curso pc ON pc.curso_id = c.id
+            LEFT JOIN usuarios u ON u.id = pc.profesor_id
+            GROUP BY c.id
+            ORDER BY c.semestre ASC, c.nombre ASC
+        `);
         return rows.map(r => new Curso(r));
     }
 
@@ -31,10 +43,17 @@ class Curso {
     static async obtenerConInscripcion(usuarioId) {
         const [rows] = await db.execute(`
             SELECT c.*,
-                CASE WHEN i.usuario_id IS NOT NULL THEN true ELSE false END AS inscrito
+                CASE WHEN i.usuario_id IS NOT NULL THEN true ELSE false END AS inscrito,
+                COUNT(DISTINCT i2.usuario_id) AS inscritos,
+                COUNT(DISTINCT pc.profesor_id) AS tiene_profesor,
+                GROUP_CONCAT(DISTINCT CONCAT(u.nombre, ' ', u.apellido) SEPARATOR ', ') AS nombre_profesor
             FROM cursos c
             LEFT JOIN inscripciones i ON i.curso_id = c.id AND i.usuario_id = ?
+            LEFT JOIN inscripciones i2 ON i2.curso_id = c.id
+            LEFT JOIN profesor_curso pc ON pc.curso_id = c.id
+            LEFT JOIN usuarios u ON u.id = pc.profesor_id
             WHERE c.activo = true
+            GROUP BY c.id, i.usuario_id
             ORDER BY c.semestre ASC, c.nombre ASC
         `, [usuarioId]);
         return rows.map(r => new Curso(r));
@@ -70,7 +89,6 @@ class Curso {
             );
             return true;
         } catch (err) {
-            // Error de duplicado (ya inscrito)
             if (err.code === 'ER_DUP_ENTRY') return false;
             throw err;
         }
@@ -97,8 +115,8 @@ class Curso {
     // ── Crear curso (admin) ───────────────────────
     static async crear(data) {
         const [result] = await db.execute(
-            `INSERT INTO cursos (nombre, descripcion, creditos, semestre) VALUES (?, ?, ?, ?)`,
-            [data.nombre, data.descripcion, data.creditos, data.semestre]
+            `INSERT INTO cursos (nombre, descripcion, creditos, semestre, capacidad_maxima) VALUES (?, ?, ?, ?, ?)`,
+            [data.nombre, data.descripcion, data.creditos, data.semestre, data.capacidadMaxima || 40]
         );
         return result.insertId;
     }
@@ -106,8 +124,8 @@ class Curso {
     // ── Actualizar curso (admin) ──────────────────
     static async actualizar(id, data) {
         const [result] = await db.execute(
-            `UPDATE cursos SET nombre=?, descripcion=?, creditos=?, semestre=?, activo=? WHERE id=?`,
-            [data.nombre, data.descripcion, data.creditos, data.semestre, data.activo, id]
+            `UPDATE cursos SET nombre=?, descripcion=?, creditos=?, semestre=?, activo=?, capacidad_maxima=? WHERE id=?`,
+            [data.nombre, data.descripcion, data.creditos, data.semestre, data.activo, data.capacidadMaxima || 40, id]
         );
         return result.affectedRows > 0;
     }

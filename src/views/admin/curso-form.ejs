@@ -1,3 +1,7 @@
+<%# ============================================
+    ProyUts - Formulario de Curso (Admin)
+    src/views/admin/curso-form.ejs
+    ============================================ %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -14,7 +18,9 @@
             <div class="col-md-6">
 
                 <div class="d-flex align-items-center mb-4">
-                    <a href="/admin/cursos" class="btn btn-outline-secondary btn-sm me-3"><i class="bi bi-arrow-left"></i></a>
+                    <a href="/admin/cursos" class="btn btn-outline-secondary btn-sm me-3">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
                     <h4 class="fw-bold mb-0">
                         <i class="bi bi-book me-2 text-warning"></i>
                         <%= curso ? 'Editar curso' : 'Nuevo curso' %>
@@ -22,24 +28,30 @@
                 </div>
 
                 <div class="card p-4" style="border:none; border-radius:16px; box-shadow:var(--shadow);">
+
                     <% if (error) { %>
-                    <div class="alert alert-danger"><i class="bi bi-exclamation-circle me-2"></i><%= error %></div>
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-circle me-2"></i><%= error %>
+                    </div>
                     <% } %>
 
                     <form action="<%= curso ? '/admin/cursos/' + curso.id + '/editar' : '/admin/cursos' %>" method="POST">
+
                         <div class="mb-3">
                             <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
                             <input type="text" name="nombre" class="form-control"
                                    placeholder="Nombre del curso"
                                    value="<%= curso ? curso.nombre : '' %>" required>
                         </div>
+
                         <div class="mb-3">
                             <label class="form-label fw-bold">Descripción</label>
                             <textarea name="descripcion" class="form-control" rows="3"
                                       placeholder="Descripción del curso"><%= curso ? curso.descripcion : '' %></textarea>
                         </div>
+
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label fw-bold">Semestre <span class="text-danger">*</span></label>
                                 <select name="semestre" class="form-select" required>
                                     <option value="">--</option>
@@ -47,12 +59,21 @@
                                     <option value="2" <%= curso && curso.semestre == 2 ? 'selected' : '' %>>2</option>
                                 </select>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label fw-bold">Créditos</label>
-                                <input type="number" name="creditos" class="form-control" min="1" max="10"
+                                <input type="number" name="creditos" class="form-control"
+                                       min="1" max="10"
                                        value="<%= curso ? curso.creditos : 3 %>">
                             </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Capacidad máx.</label>
+                                <input type="number" name="capacidad_maxima" class="form-control"
+                                       min="1" max="100"
+                                       value="<%= curso ? curso.capacidadMaxima : 40 %>">
+                                <small class="text-muted">Máx. estudiantes</small>
+                            </div>
                         </div>
+
                         <% if (curso) { %>
                         <div class="mb-4">
                             <div class="form-check">
@@ -63,6 +84,7 @@
                             </div>
                         </div>
                         <% } %>
+
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary px-4">
                                 <i class="bi bi-<%= curso ? 'check-circle' : 'plus-circle' %> me-1"></i>
@@ -70,9 +92,9 @@
                             </button>
                             <a href="/admin/cursos" class="btn btn-outline-secondary px-4">Cancelar</a>
                         </div>
+
                     </form>
                 </div>
-
             </div>
         </div>
     </div>

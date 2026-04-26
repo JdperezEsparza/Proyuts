@@ -1,269 +1,176 @@
+<%# ============================================
+    ProyUts - Cursos Disponibles
+    src/views/cursos/index.ejs
+    ============================================ %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <%- include('../partials/head', { titulo: 'Cursos' }) %>
     <style>
-        :root {
-            --verde-uts: #C3D730;
-            --verde-uts-suave: #F0F5CC;
-            --verde-uts-oscuro: #7A8A00;
-            --gris-claro: #B3B3B3;
-            --gris-medio: #878787;
-            --fondo: #F5F5F5;
-            --oscuro: #1A1A1A;
-        }
-
-        body { background-color: var(--fondo); }
-
-        /* === BOTÓN VOLVER === */
-        .btn-volver {
-            background: transparent;
-            border: 1px solid var(--gris-medio);
-            color: var(--gris-medio);
-            border-radius: 10px;
-            padding: 4px 12px;
-            font-size: 0.9rem;
-            transition: border-color 0.2s, color 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-        }
-        .btn-volver:hover { border-color: var(--oscuro); color: var(--oscuro); }
-
-        /* === CARDS === */
-        .card {
-            border: 1px solid #E5E5E5 !important;
-            border-radius: 16px;
-            background: var(--bg-card, #fff);
-        }
-
-        /* === BADGE CURSOS INSCRITOS === */
-        .badge-contador {
-            background: var(--verde-uts);
-            color: var(--oscuro);
-            font-weight: 700;
-            font-size: 0.95rem;
-            border-radius: 10px;
-            padding: 4px 14px;
-        }
-        .badge-inscrito-tag {
-            background: var(--verde-uts-suave);
-            color: var(--verde-uts-oscuro);
-            font-weight: 700;
-            font-size: 0.8rem;
-            border-radius: 8px;
-            padding: 3px 10px;
-        }
-
-        /* === FILTROS === */
-        .btn-filtro {
-            background: transparent;
-            border: 1px solid var(--gris-medio);
-            color: var(--gris-medio);
-            border-radius: 8px;
-            padding: 4px 14px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-filtro.active,
-        .btn-filtro:hover {
-            background: var(--verde-uts);
-            border-color: var(--verde-uts);
-            color: var(--oscuro);
-            font-weight: 700;
-        }
-        .btn-filtro-inscrito.active,
-        .btn-filtro-inscrito:hover {
-            background: #2e7d32;
-            border-color: #2e7d32;
-            color: white;
-        }
-        .btn-filtro-no.active,
-        .btn-filtro-no:hover {
-            background: var(--gris-medio);
-            border-color: var(--gris-medio);
-            color: white;
-        }
-
-        /* === CURSO CARDS === */
         .curso-card {
-            border: 1px solid #E5E5E5 !important;
-            border-radius: 12px;
-            border-left: 5px solid var(--verde-uts) !important;
-            background: var(--bg-card, #fff);
-            box-shadow: var(--shadow);
-            transition: transform 0.2s, box-shadow 0.2s;
+            border: none; border-radius: 12px;
+            border-left: 5px solid #1a237e;
+            box-shadow: var(--shadow); transition: transform 0.2s;
         }
-        .curso-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(195,215,48,0.15);
-        }
-        .curso-card.inscrito { border-left-color: #2e7d32 !important; }
-
-        /* === BADGE ESTADO === */
-        .badge-inscrito-estado {
-            background: #2e7d32;
-            color: white;
-            font-size: 0.8rem;
-            border-radius: 8px;
-            padding: 3px 10px;
-            font-weight: 600;
-        }
-
-        /* === BOTONES ACCIÓN === */
-        .btn-inscribir {
-            background: var(--verde-uts);
-            color: var(--oscuro);
-            font-weight: 700;
-            border: none;
-            border-radius: 8px;
-            padding: 5px 14px;
-            font-size: 0.85rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-inscribir:hover { background: #b0c228; color: var(--oscuro); }
-
-        .btn-baja {
-            background: transparent;
-            border: 1px solid #E53935;
-            color: #E53935;
-            border-radius: 8px;
-            padding: 5px 14px;
-            font-size: 0.85rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-baja:hover { background: #E53935; color: white; }
-
-        /* === ALERTAS === */
-        .alerta-ok {
-            background: var(--verde-uts-suave);
-            border: 1px solid var(--verde-uts);
-            color: var(--verde-uts-oscuro);
-            border-radius: 10px;
-            padding: 10px 14px;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .alerta-warn {
-            background: #FFF8E1;
-            border: 1px solid #F57C00;
-            color: #E65100;
-            border-radius: 10px;
-            padding: 10px 14px;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .btn-close-alerta {
-            background: transparent;
-            border: none;
-            font-size: 1rem;
-            cursor: pointer;
-            color: inherit;
-            opacity: 0.6;
-            line-height: 1;
-        }
-        .btn-close-alerta:hover { opacity: 1; }
+        .curso-card:hover { transform: translateY(-3px); }
+        .curso-card.inscrito { border-left-color: #2e7d32; }
+        .curso-card.sin-profesor { border-left-color: #878787; opacity: 0.75; }
+        .curso-card.lleno { border-left-color: #c62828; opacity: 0.75; }
+        .btn-primary { background-color: #1a237e; border-color: #1a237e; }
+        .btn-primary:hover { background-color: #283593; border-color: #283593; }
+        .capacidad-bar { height: 6px; border-radius: 4px; background: #e0e0e0; overflow: hidden; }
+        .capacidad-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
     </style>
 </head>
 <body>
     <%- include('../partials/navbar') %>
     <div class="container py-4">
 
+        <!-- Encabezado -->
         <div class="d-flex align-items-center mb-4">
-            <a href="/dashboard" class="btn-volver me-3"><i class="bi bi-arrow-left"></i></a>
+            <a href="/dashboard" class="btn btn-outline-secondary btn-sm me-3">
+                <i class="bi bi-arrow-left"></i>
+            </a>
             <h4 class="fw-bold mb-0">
-                <i class="bi bi-book me-2" style="color:var(--verde-uts-oscuro);"></i>Cursos Disponibles
+                <i class="bi bi-book me-2 text-primary"></i>Cursos Disponibles
             </h4>
         </div>
 
+        <!-- Alertas -->
         <% if (mensaje === 'inscrito') { %>
-        <div class="alerta-ok mb-3">
-            <span><i class="bi bi-check-circle me-2"></i>Te inscribiste al curso exitosamente.</span>
-            <button class="btn-close-alerta" onclick="this.parentElement.remove()">✕</button>
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle me-2"></i>Te inscribiste al curso exitosamente.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         <% } else if (mensaje === 'baja') { %>
-        <div class="alerta-warn mb-3">
-            <span><i class="bi bi-info-circle me-2"></i>Te diste de baja del curso.</span>
-            <button class="btn-close-alerta" onclick="this.parentElement.remove()">✕</button>
+        <div class="alert alert-warning alert-dismissible fade show">
+            <i class="bi bi-info-circle me-2"></i>Te diste de baja del curso.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } else if (mensaje === 'sin-profesor') { %>
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-circle me-2"></i>No puedes inscribirte a este curso porque aún no tiene un profesor asignado.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } else if (mensaje === 'lleno') { %>
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-people me-2"></i>Este curso ya alcanzó su capacidad máxima de estudiantes.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         <% } %>
 
         <!-- Resumen inscritos -->
-        <div class="card p-3 mb-4">
+        <div class="card p-3 mb-4" style="border:none; border-radius:16px; box-shadow:var(--shadow);">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h6 class="fw-bold mb-0">Mis cursos inscritos</h6>
                     <small class="text-muted">Cursos en los que estás actualmente inscrito</small>
                 </div>
-                <span class="badge-contador"><%= inscritos.length %> cursos</span>
+                <span class="badge bg-primary fs-6"><%= inscritos.length %> cursos</span>
             </div>
             <% if (inscritos.length > 0) { %>
             <div class="mt-2 d-flex flex-wrap gap-2">
                 <% inscritos.forEach(c => { %>
-                <span class="badge-inscrito-tag"><%= c.nombre %></span>
+                <span class="badge bg-success"><%= c.nombre %></span>
                 <% }) %>
             </div>
             <% } %>
         </div>
 
         <!-- Filtros -->
-        <div class="d-flex gap-2 mb-3">
-            <button class="btn-filtro active" onclick="filtrar('todos', this)">Todos</button>
-            <button class="btn-filtro btn-filtro-inscrito" onclick="filtrar('inscrito', this)">Inscritos</button>
-            <button class="btn-filtro btn-filtro-no" onclick="filtrar('no-inscrito', this)">No inscritos</button>
+        <div class="d-flex gap-2 mb-3 flex-wrap">
+            <button class="btn btn-sm btn-primary" onclick="filtrar('todos')">Todos</button>
+            <button class="btn btn-sm btn-outline-success" onclick="filtrar('inscrito')">Inscritos</button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="filtrar('no-inscrito')">No inscritos</button>
         </div>
 
-        <!-- Lista cursos -->
+        <!-- Lista de cursos -->
         <% if (cursos.length === 0) { %>
-        <div class="card p-5 text-center">
-            <i class="bi bi-book fs-1 d-block mb-3" style="color:var(--gris-medio);"></i>
+        <div class="card p-5 text-center" style="border:none; border-radius:16px; box-shadow:var(--shadow);">
+            <i class="bi bi-book fs-1 text-muted d-block mb-3"></i>
             <h5 class="text-muted">No hay cursos disponibles</h5>
         </div>
         <% } else { %>
-            <% cursos.forEach(c => { %>
-            <div class="curso-card card p-3 mb-3 <%= c.inscrito ? 'inscrito' : '' %>"
+            <% cursos.forEach(c => {
+                const porcentaje = Math.round((c.inscritos / c.capacidadMaxima) * 100);
+                const lleno = c.inscritos >= c.capacidadMaxima;
+                const sinProfesor = !c.tieneProfesor || c.tieneProfesor == 0;
+                const claseExtra = c.inscrito ? 'inscrito' : sinProfesor ? 'sin-profesor' : lleno ? 'lleno' : '';
+            %>
+            <div class="curso-card card p-3 mb-3 <%= claseExtra %>"
                  data-estado="<%= c.inscrito ? 'inscrito' : 'no-inscrito' %>">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
-                        <div class="d-flex align-items-center gap-2 mb-1">
+
+                        <!-- Nombre y badges -->
+                        <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                             <h6 class="fw-bold mb-0"><%= c.nombre %></h6>
                             <% if (c.inscrito) { %>
-                            <span class="badge-inscrito-estado">Inscrito</span>
+                            <span class="badge bg-success">Inscrito</span>
+                            <% } %>
+                            <% if (sinProfesor) { %>
+                            <span class="badge bg-secondary">Sin profesor</span>
+                            <% } %>
+                            <% if (lleno && !c.inscrito) { %>
+                            <span class="badge bg-danger">Cupo lleno</span>
                             <% } %>
                         </div>
+
+                        <!-- Descripción -->
                         <% if (c.descripcion) { %>
-                        <p class="text-muted small mb-1"><%= c.descripcion %></p>
+                        <p class="text-muted small mb-2"><%= c.descripcion %></p>
                         <% } %>
-                        <div class="d-flex gap-3">
-                            <small class="text-muted"><i class="bi bi-bookmark me-1"></i>Semestre <%= c.semestre %></small>
-                            <small class="text-muted"><i class="bi bi-star me-1"></i><%= c.creditos %> créditos</small>
+
+                        <!-- Info -->
+                        <div class="d-flex gap-3 flex-wrap mb-2">
+                            <small class="text-muted">
+                                <i class="bi bi-bookmark me-1"></i>Semestre <%= c.semestre %>
+                            </small>
+                            <small class="text-muted">
+                                <i class="bi bi-star me-1"></i><%= c.creditos %> créditos
+                            </small>
+                            <small class="text-muted">
+                                <i class="bi bi-people me-1"></i><%= c.inscritos %> / <%= c.capacidadMaxima %> estudiantes
+                            </small>
+                            <% if (c.nombreProfesor) { %>
+                            <small class="text-muted">
+                                <i class="bi bi-person-workspace me-1"></i><%= c.nombreProfesor %>
+                            </small>
+                            <% } %>
                         </div>
+
+                        <!-- Barra de capacidad -->
+                        <div class="capacidad-bar" style="max-width: 200px;">
+                            <div class="capacidad-fill"
+                                 style="width:<%= porcentaje %>%;
+                                        background-color: <%= porcentaje >= 100 ? '#c62828' : porcentaje >= 75 ? '#f57c00' : '#2e7d32' %>;">
+                            </div>
+                        </div>
+                        <small class="text-muted"><%= porcentaje %>% de capacidad usado</small>
+
                     </div>
-                    <div class="ms-3">
+
+                    <!-- Botón de acción -->
+                    <div class="ms-3 mt-1">
                         <% if (c.inscrito) { %>
                         <form action="/cursos/<%= c.id %>/baja" method="POST"
                               onsubmit="return confirm('¿Seguro que quieres darte de baja?')">
-                            <button type="submit" class="btn-baja">
-                                <i class="bi bi-x-circle"></i>Dar de baja
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-x-circle me-1"></i>Dar de baja
                             </button>
                         </form>
+                        <% } else if (sinProfesor) { %>
+                        <button class="btn btn-secondary btn-sm" disabled title="Sin profesor asignado">
+                            <i class="bi bi-lock me-1"></i>No disponible
+                        </button>
+                        <% } else if (lleno) { %>
+                        <button class="btn btn-danger btn-sm" disabled title="Cupo lleno">
+                            <i class="bi bi-people me-1"></i>Cupo lleno
+                        </button>
                         <% } else { %>
                         <form action="/cursos/<%= c.id %>/inscribir" method="POST">
-                            <button type="submit" class="btn-inscribir">
-                                <i class="bi bi-plus-circle"></i>Inscribirse
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="bi bi-plus-circle me-1"></i>Inscribirse
                             </button>
                         </form>
                         <% } %>
@@ -276,9 +183,7 @@
     </div>
     <%- include('../partials/scripts') %>
     <script>
-        function filtrar(tipo, btn) {
-            document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        function filtrar(tipo) {
             document.querySelectorAll('[data-estado]').forEach(t => {
                 t.style.display = (tipo === 'todos' || t.dataset.estado === tipo) ? 'block' : 'none';
             });
