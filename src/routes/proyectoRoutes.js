@@ -29,7 +29,15 @@ router.get('/proyectos', requireAuth, async (req, res) => {
 // ── GET /proyectos/nuevo - Formulario de creación ──
 router.get('/proyectos/nuevo', requireAuth, async (req, res) => {
     try {
-        const [cursos] = await db.execute(`SELECT * FROM cursos WHERE activo = true`);
+        const usuarioId = req.session.usuario.id;
+        // Solo cursos en los que el estudiante está inscrito
+        const [cursos] = await db.execute(`
+            SELECT c.* FROM cursos c
+            INNER JOIN inscripciones i ON i.curso_id = c.id
+            WHERE i.usuario_id = ? AND c.activo = true
+            ORDER BY c.semestre ASC, c.nombre ASC
+        `, [usuarioId]);
+
         res.render('proyectos/form', { proyecto: null, cursos, error: null });
     } catch (err) {
         console.error(err);
@@ -44,7 +52,12 @@ router.post('/proyectos', requireAuth, async (req, res) => {
         const usuarioId = req.session.usuario.id;
 
         if (!titulo || !fecha_realizacion || !semestre) {
-            const [cursos] = await db.execute(`SELECT * FROM cursos WHERE activo = true`);
+            const [cursos] = await db.execute(`
+                SELECT c.* FROM cursos c
+                INNER JOIN inscripciones i ON i.curso_id = c.id
+                WHERE i.usuario_id = ? AND c.activo = true
+                ORDER BY c.semestre ASC, c.nombre ASC
+            `, [usuarioId]);
             return res.render('proyectos/form', {
                 proyecto: null,
                 cursos,
@@ -79,7 +92,14 @@ router.get('/proyectos/:id/editar', requireAuth, async (req, res) => {
 
         if (!proyecto) return res.redirect('/proyectos');
 
-        const [cursos] = await db.execute(`SELECT * FROM cursos WHERE activo = true`);
+        // Solo cursos en los que el estudiante está inscrito
+        const [cursos] = await db.execute(`
+            SELECT c.* FROM cursos c
+            INNER JOIN inscripciones i ON i.curso_id = c.id
+            WHERE i.usuario_id = ? AND c.activo = true
+            ORDER BY c.semestre ASC, c.nombre ASC
+        `, [usuarioId]);
+
         res.render('proyectos/form', { proyecto, cursos, error: null });
     } catch (err) {
         console.error(err);
@@ -95,7 +115,12 @@ router.post('/proyectos/:id/editar', requireAuth, async (req, res) => {
         const proyectoId = req.params.id;
 
         if (!titulo || !fecha_realizacion || !semestre) {
-            const [cursos] = await db.execute(`SELECT * FROM cursos WHERE activo = true`);
+            const [cursos] = await db.execute(`
+                SELECT c.* FROM cursos c
+                INNER JOIN inscripciones i ON i.curso_id = c.id
+                WHERE i.usuario_id = ? AND c.activo = true
+                ORDER BY c.semestre ASC, c.nombre ASC
+            `, [usuarioId]);
             const proyecto = await Proyecto.obtenerPorId(proyectoId, usuarioId);
             return res.render('proyectos/form', {
                 proyecto,

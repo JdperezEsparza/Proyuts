@@ -1,187 +1,264 @@
+<%# ============================================
+    ProyUts - Panel Principal
+    src/views/dashboard.ejs
+    ============================================ %>
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <%- include('partials/head', { titulo: 'Panel Principal' }) %>
-        <style>
-            /* === VARIABLES UTS === */
-            :root {
-                --verde-uts: #C3D730;
-                --verde-uts-suave: #F0F5CC;
-                --gris-claro: #B3B3B3;
-                --gris-medio: #878787;
-                --fondo: #F5F5F5;
-                --oscuro: #1A1A1A;
-            }
-
-            body {
-                background-color: var(--fondo);
-            }
-
-            /* === BIENVENIDA === */
-            .bienvenida {
-                background: var(--oscuro);
-                border-radius: 16px;
-                border-left: 5px solid var(--verde-uts);
-            }
-
-            .bienvenida h4 {
-                color: #ffffff;
-            }
-
-            .bienvenida p {
-                color: var(--gris-claro);
-            }
-
-            /* === BADGE DE PUNTOS === */
-            .puntos-badge {
-                background: var(--verde-uts);
-                border-radius: 12px;
-                padding: 8px 18px;
-            }
-
-            .puntos-badge p,
-            .puntos-badge h5 {
-                color: var(--oscuro) !important;
-            }
-
-            /* === CARDS === */
-            .card-menu {
-                border: 1px solid #E5E5E5 !important;
-                border-radius: 16px;
-                background: #ffffff;
-                transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-                cursor: pointer;
-                text-decoration: none;
-                color: inherit;
-            }
-
-            .card-menu:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 30px rgba(195, 215, 48, 0.2);
-                border-color: var(--verde-uts) !important;
-                color: inherit;
-            }
-
-            /* === ICONOS === */
-            .card-menu .icon {
-                font-size: 2.5rem;
-                color: #7A8A00;
-            }
-        </style>
+    <style>
+        .card-menu {
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            background: var(--bg-card);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        .card-menu:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            color: inherit;
+        }
+        .card-menu .icon { font-size: 2.5rem; color: #1a237e; }
+        .bienvenida {
+            background: linear-gradient(135deg, #1a237e, #3949ab);
+            color: white;
+            border-radius: 16px;
+        }
+        .puntos-badge {
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 6px 14px;
+        }
+        .rol-badge {
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 6px;
+        }
+    </style>
 </head>
-
 <body>
     <%- include('partials/navbar') %>
-        <div class="container py-4">
-            <div class="bienvenida p-4 mb-4">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h4 class="fw-bold mb-1">Bienvenido, <%= usuario.nombre %>!</h4>
-                        <p class="mb-0 opacity-75">
-                            <i class="bi bi-mortarboard me-1"></i>
-                            <%= usuario.programa %> &nbsp;|&nbsp;
-                                <i class="bi bi-bookmark me-1"></i>Semestre <%= usuario.semestre %> &nbsp;|&nbsp;
-                                    <i class="bi bi-person-badge me-1"></i>Código: <%= usuario.codigo %>
-                        </p>
-                    </div>
-                    <div class="puntos-badge text-center">
-                        <p class="mb-0 small opacity-75">Tus puntos</p>
-                        <h5 class="fw-bold mb-0">
-                            <%= usuario.puntos || 0 %> pts
-                        </h5>
-                    </div>
-                </div>
-            </div>
-            <div class="row g-3">
-                <div class="col-md-4 col-6">
-                    <a href="/proyectos" class="card card-menu p-4 text-center d-block">
-                        <i class="bi bi-folder2-open icon"></i>
-                        <p class="fw-bold mt-2 mb-0">Mis Proyectos</p>
-                        <small class="text-muted">Gestionar proyectos</small>
-                    </a>
-                </div>
-                <div class="col-md-4 col-6">
-                    <a href="/estadisticas" class="card card-menu p-4 text-center d-block">
-                        <i class="bi bi-bar-chart-line icon"></i>
-                        <p class="fw-bold mt-2 mb-0">Estadísticas</p>
-                        <small class="text-muted">Ver mi avance</small>
-                    </a>
-                </div>
-                <div class="col-md-4 col-6">
-                    <a href="/cursos" class="card card-menu p-4 text-center d-block">
-                        <i class="bi bi-book icon"></i>
-                        <p class="fw-bold mt-2 mb-0">Cursos</p>
-                        <small class="text-muted">Ver e inscribirse</small>
-                    </a>
-                </div>
-                <div class="col-md-4 col-6">
-                    <a href="/perfil" class="card card-menu p-4 text-center d-block">
-                        <i class="bi bi-person-circle icon"></i>
-                        <p class="fw-bold mt-2 mb-0">Mi Perfil</p>
-                        <small class="text-muted">Ver y editar perfil</small>
-                    </a>
-                </div>
-                <div class="col-md-4 col-6">
-                    <a href="/chat" class="card card-menu p-4 text-center d-block">
-                        <i class="bi bi-chat-dots icon"></i>
-                        <p class="fw-bold mt-2 mb-0">Chat</p>
-                        <small class="text-muted">Mensajes con estudiantes</small>
-                    </a>
-                </div>
-                <div class="col-md-4 col-6">
-                    <a href="/anuncios" class="card card-menu p-4 text-center d-block">
-                        <i class="bi bi-megaphone icon"></i>
-                        <p class="fw-bold mt-2 mb-0">Anuncios</p>
-                        <small class="text-muted">Tablero de noticias</small>
-                    </a>
-                </div>
-                <div class="col-md-4 col-6">
-                    <a href="/ranking" class="card card-menu p-4 text-center d-block">
-                        <i class="bi bi-trophy-fill icon" style="color:#F57C00;"></i>
-                        <p class="fw-bold mt-2 mb-0">Ranking</p>
-                        <small class="text-muted">Top 10 estudiantes</small>
-                    </a>
-                </div>
-                <div class="col-md-4 col-6">
-                    <a href="/logros" class="card card-menu p-4 text-center d-block">
-                        <i class="bi bi-award-fill icon" style="color:#e91e63;"></i>
-                        <p class="fw-bold mt-2 mb-0">Mis Logros</p>
-                        <small class="text-muted">Insignias obtenidas</small>
-                    </a>
-                </div>
-                <div class="col-md-4 col-6">
-                    <a href="/chatbot" class="card card-menu p-4 text-center d-block">
-                        <i class="bi bi-stars icon" style="color:#7c4dff;"></i>
-                        <p class="fw-bold mt-2 mb-0">Asistente IA</p>
-                        <small class="text-muted">Chatbot ProyUts</small>
-                    </a>
-                </div>
-                <% if (usuario.rol==='profesor' ) { %>
-                    <div class="col-md-4 col-6">
-                        <a href="/profesor" class="card card-menu p-4 text-center d-block">
-                            <i class="bi bi-person-workspace icon" style="color:#0288d1;"></i>
-                            <p class="fw-bold mt-2 mb-0">Panel Profesor</p>
-                            <small class="text-muted">Revisar proyectos</small>
-                        </a>
-                    </div>
-                    <% } %>
-                        <% if (usuario.rol==='admin' ) { %>
-                            <div class="col-md-4 col-6">
-                                <a href="/admin" class="card card-menu p-4 text-center d-block">
-                                    <i class="bi bi-shield-fill-check icon" style="color:#e53935;"></i>
-                                    <p class="fw-bold mt-2 mb-0">Panel Admin</p>
-                                    <small class="text-muted">Gestión del sistema</small>
-                                </a>
-                            </div>
-                            <% } %>
+    <div class="container py-4">
 
+        <!-- Bienvenida -->
+        <div class="bienvenida p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="fw-bold mb-1">Bienvenido, <%= usuario.nombre %>!</h4>
+                    <p class="mb-0 opacity-75">
+                        <i class="bi bi-mortarboard me-1"></i><%= usuario.programa %> &nbsp;|&nbsp;
+                        <i class="bi bi-bookmark me-1"></i>Semestre <%= usuario.semestre %> &nbsp;|&nbsp;
+                        <i class="bi bi-person-badge me-1"></i>Código: <%= usuario.codigo %>
+                    </p>
+                    <span class="rol-badge">
+                        <% if (usuario.rol === 'admin') { %>
+                        <i class="bi bi-shield-fill-check me-1"></i>Administrador
+                        <% } else if (usuario.rol === 'profesor') { %>
+                        <i class="bi bi-person-workspace me-1"></i>Profesor
+                        <% } else { %>
+                        <i class="bi bi-person me-1"></i>Estudiante
+                        <% } %>
+                    </span>
+                </div>
+                <% if (usuario.rol === 'estudiante') { %>
+                <div class="puntos-badge text-center">
+                    <p class="mb-0 small opacity-75">Tus puntos</p>
+                    <h5 class="fw-bold mb-0"><%= usuario.puntos || 0 %> pts</h5>
+                </div>
+                <% } %>
             </div>
-
         </div>
 
+        <!-- ════════════════════════════════════
+             MENÚ PARA ESTUDIANTES
+             ════════════════════════════════════ -->
+        <% if (usuario.rol === 'estudiante') { %>
+        <div class="row g-3">
+            <div class="col-md-4 col-6">
+                <a href="/proyectos" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-folder2-open icon"></i>
+                    <p class="fw-bold mt-2 mb-0">Mis Proyectos</p>
+                    <small class="text-muted">Gestionar proyectos</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/estadisticas" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-bar-chart-line icon"></i>
+                    <p class="fw-bold mt-2 mb-0">Estadísticas</p>
+                    <small class="text-muted">Ver mi avance</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/cursos" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-book icon"></i>
+                    <p class="fw-bold mt-2 mb-0">Cursos</p>
+                    <small class="text-muted">Ver e inscribirse</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/perfil" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-person-circle icon"></i>
+                    <p class="fw-bold mt-2 mb-0">Mi Perfil</p>
+                    <small class="text-muted">Ver y editar perfil</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/chat" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-chat-dots icon"></i>
+                    <p class="fw-bold mt-2 mb-0">Chat</p>
+                    <small class="text-muted">Mensajes con estudiantes</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/anuncios" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-megaphone icon"></i>
+                    <p class="fw-bold mt-2 mb-0">Anuncios</p>
+                    <small class="text-muted">Tablero de noticias</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/ranking" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-trophy-fill icon" style="color:#FFA500;"></i>
+                    <p class="fw-bold mt-2 mb-0">Ranking</p>
+                    <small class="text-muted">Top 10 estudiantes</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/logros" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-award-fill icon" style="color:#e91e63;"></i>
+                    <p class="fw-bold mt-2 mb-0">Mis Logros</p>
+                    <small class="text-muted">Insignias obtenidas</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/chatbot" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-stars icon" style="color:#7c4dff;"></i>
+                    <p class="fw-bold mt-2 mb-0">Asistente IA</p>
+                    <small class="text-muted">Chatbot ProyUts</small>
+                </a>
+            </div>
+        </div>
 
-        <%- include('partials/scripts') %>
+        <!-- ════════════════════════════════════
+             MENÚ PARA PROFESORES
+             ════════════════════════════════════ -->
+        <% } else if (usuario.rol === 'profesor') { %>
+        <div class="row g-3">
+            <div class="col-md-4 col-6">
+                <a href="/profesor" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-person-workspace icon" style="color:#0288d1;"></i>
+                    <p class="fw-bold mt-2 mb-0">Panel Profesor</p>
+                    <small class="text-muted">Revisar proyectos</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/anuncios" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-megaphone icon"></i>
+                    <p class="fw-bold mt-2 mb-0">Anuncios</p>
+                    <small class="text-muted">Publicar y ver anuncios</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/chat" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-chat-dots icon"></i>
+                    <p class="fw-bold mt-2 mb-0">Chat</p>
+                    <small class="text-muted">Mensajes con estudiantes</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/perfil" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-person-circle icon"></i>
+                    <p class="fw-bold mt-2 mb-0">Mi Perfil</p>
+                    <small class="text-muted">Ver y editar perfil</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/ranking" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-trophy-fill icon" style="color:#FFA500;"></i>
+                    <p class="fw-bold mt-2 mb-0">Ranking</p>
+                    <small class="text-muted">Top 10 estudiantes</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/chatbot" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-stars icon" style="color:#7c4dff;"></i>
+                    <p class="fw-bold mt-2 mb-0">Asistente IA</p>
+                    <small class="text-muted">Chatbot ProyUts</small>
+                </a>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════
+             MENÚ PARA ADMINISTRADORES
+             ════════════════════════════════════ -->
+        <% } else if (usuario.rol === 'admin') { %>
+        <div class="row g-3">
+            <div class="col-md-4 col-6">
+                <a href="/admin" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-shield-fill-check icon" style="color:#e53935;"></i>
+                    <p class="fw-bold mt-2 mb-0">Panel Admin</p>
+                    <small class="text-muted">Gestión del sistema</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/admin/usuarios" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-people-fill icon" style="color:#1a237e;"></i>
+                    <p class="fw-bold mt-2 mb-0">Usuarios</p>
+                    <small class="text-muted">Gestionar estudiantes</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/admin/profesores" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-person-workspace icon" style="color:#0288d1;"></i>
+                    <p class="fw-bold mt-2 mb-0">Profesores</p>
+                    <small class="text-muted">Asignar cursos</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/admin/cursos" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-book icon" style="color:#f57c00;"></i>
+                    <p class="fw-bold mt-2 mb-0">Cursos</p>
+                    <small class="text-muted">CRUD de cursos</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/anuncios" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-megaphone icon" style="color:#e53935;"></i>
+                    <p class="fw-bold mt-2 mb-0">Anuncios</p>
+                    <small class="text-muted">Publicar y gestionar</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/ranking" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-trophy-fill icon" style="color:#FFA500;"></i>
+                    <p class="fw-bold mt-2 mb-0">Ranking</p>
+                    <small class="text-muted">Top 10 estudiantes</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/chat" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-chat-dots icon"></i>
+                    <p class="fw-bold mt-2 mb-0">Chat</p>
+                    <small class="text-muted">Mensajes</small>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="/chatbot" class="card card-menu p-4 text-center d-block">
+                    <i class="bi bi-stars icon" style="color:#7c4dff;"></i>
+                    <p class="fw-bold mt-2 mb-0">Asistente IA</p>
+                    <small class="text-muted">Chatbot ProyUts</small>
+                </a>
+            </div>
+        </div>
+        <% } %>
+
+    </div>
+    <%- include('partials/scripts') %>
 </body>
-
 </html>
