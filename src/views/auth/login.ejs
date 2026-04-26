@@ -1,155 +1,147 @@
+<%# ============================================
+    ProyUts - Iniciar Sesión
+    src/views/auth/login.ejs
+    ============================================ %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <%- include('../partials/head', { titulo: 'Iniciar Sesión' }) %>
     <style>
         body {
-            background: #1A1A1A;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            background-color: var(--bg-body);
         }
 
-        /* === CARD === */
-        .card-login {
-            background: #ffffff;
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-card);
+            border: 2px solid #C3D730;
             border-radius: 20px;
-            border: none;
-            padding: 2rem 2rem;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(195, 215, 48, 0.15);
         }
 
-        /* === ACENTO SUPERIOR === */
-        .card-accent {
-            height: 4px;
-            background: #C3D730;
-            margin: -2rem -2rem 1.5rem -2rem;
-            border-radius: 20px 20px 0 0;
-        }
-
-        /* === LOGO === */
         .logo-title {
             color: #C3D730;
             font-weight: 800;
-            font-size: 2rem;
-            letter-spacing: -1px;
-        }
-        .logo-sub { color: #878787; font-size: 0.9rem; }
-
-        /* === INPUTS === */
-        .form-control:focus {
-            border-color: #C3D730;
-            box-shadow: 0 0 0 3px rgba(195, 215, 48, 0.2);
-        }
-        .input-group-text {
-            background: #F5F5F5;
-            border-color: #dee2e6;
-            color: #878787;
+            font-size: 2.2rem;
         }
 
-        /* === BOTÓN INGRESAR === */
-        .btn-uts {
-            background: #C3D730;
+        .btn-ingresar {
+            background-color: #C3D730;
+            border: none;
             color: #1A1A1A;
             font-weight: 700;
-            border: none;
-            border-radius: 10px;
-            padding: 10px;
             font-size: 1rem;
+            padding: 12px;
+            border-radius: 10px;
             width: 100%;
-            cursor: pointer;
             transition: background 0.2s;
+        }
+
+        .btn-ingresar:hover {
+            background-color: #afc024;
+        }
+
+        .btn-tema-login {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow);
+            transition: background 0.2s;
         }
-        .btn-uts:hover { background: #b0c228; }
 
-        /* === LINK REGISTRO === */
+        .btn-tema-login:hover {
+            background: var(--bg-hover);
+        }
+
         .link-registro {
-            color: #7A8A00;
+            color: #C3D730;
             font-weight: 700;
             text-decoration: none;
         }
-        .link-registro:hover { color: #C3D730; }
 
-        /* === ALERTAS === */
-        .alerta-ok {
-            background: #F0F5CC;
-            border: 1px solid #C3D730;
-            color: #7A8A00;
-            border-radius: 10px;
-            padding: 10px 14px;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-        .alerta-error {
-            background: #FFEBEE;
-            border: 1px solid #E53935;
-            color: #B71C1C;
-            border-radius: 10px;
-            padding: 10px 14px;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
+        .link-registro:hover {
+            color: #afc024;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-5">
-                <div class="card-login">
-                    <div class="card-accent"></div>
 
-                    <div class="text-center mb-4">
-                        <div class="logo-title">ProyUts</div>
-                        <p class="logo-sub mb-0">Unidades Tecnológicas de Santander</p>
-                    </div>
+    <!-- Botón de tema flotante -->
+    <button class="btn-tema-login" id="btnTema" onclick="toggleTema()" title="Cambiar tema"></button>
 
-                    <% if (typeof query !== 'undefined' && query && query.registered) { %>
-                    <div class="alerta-ok">
-                        <i class="bi bi-check-circle me-2"></i>Cuenta creada exitosamente. Ya puedes iniciar sesión.
-                    </div>
-                    <% } %>
-                    <% if (error) { %>
-                    <div class="alerta-error">
-                        <i class="bi bi-exclamation-circle me-2"></i><%= error %>
-                    </div>
-                    <% } %>
+    <div class="login-card">
 
-                    <form action="/login" method="POST">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Correo electrónico</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                <input type="email" name="email" class="form-control"
-                                       placeholder="ejemplo@uts.edu.co" required>
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Contraseña</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                <input type="password" name="contrasena" class="form-control"
-                                       placeholder="Tu contraseña" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-uts">
-                            <i class="bi bi-box-arrow-in-right"></i>Ingresar
-                        </button>
-                    </form>
+        <!-- Logo -->
+        <div class="text-center mb-4">
+            <h1 class="logo-title">ProyUts</h1>
+            <p class="text-muted small">Unidades Tecnológicas de Santander</p>
+        </div>
 
-                    <hr class="my-3">
-                    <p class="text-center mb-0 text-muted">
-                        ¿No tienes cuenta?
-                        <a href="/registro" class="link-registro">Regístrate aquí</a>
-                    </p>
+        <!-- Alerta registro exitoso -->
+        <% if (typeof query !== 'undefined' && query && query.registered) { %>
+        <div class="alert alert-success small">
+            <i class="bi bi-check-circle me-2"></i>Cuenta creada. Ya puedes iniciar sesión.
+        </div>
+        <% } %>
+
+        <!-- Alerta de error -->
+        <% if (error) { %>
+        <div class="alert alert-danger small">
+            <i class="bi bi-exclamation-circle me-2"></i><%= error %>
+        </div>
+        <% } %>
+
+        <!-- Formulario -->
+        <form action="/login" method="POST">
+            <div class="mb-3">
+                <label class="form-label fw-bold small">Correo electrónico</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                    <input type="email" name="email" class="form-control"
+                           placeholder="ejemplo@uts.edu.co" required>
                 </div>
             </div>
-        </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold small">Contraseña</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    <input type="password" name="contrasena" class="form-control"
+                           placeholder="Tu contraseña" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-ingresar">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar
+            </button>
+        </form>
+
+        <hr class="my-4">
+
+        <p class="text-center text-muted small mb-0">
+            ¿No tienes cuenta?
+            <a href="/registro" class="link-registro">Regístrate aquí</a>
+        </p>
+
     </div>
+
     <%- include('../partials/scripts') %>
 </body>
 </html>
